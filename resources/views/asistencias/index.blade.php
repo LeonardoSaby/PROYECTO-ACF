@@ -3,7 +3,22 @@
 @section('title', 'Asistencias')
 
 @section('content')
+
 <div class="container-fluid">
+
+    {{-- Toast centrado para errores o advertencias --}}
+    @if(session('error') || session('warning'))
+        <div id="toast-message" class="position-fixed top-50 start-50 translate-middle" style="z-index: 1055; min-width: 300px;">
+            <div class="toast align-items-center text-white {{ session('error') ? 'bg-danger' : 'bg-primary' }} border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body text-center">
+                        {{ session('error') ?? session('warning') ?? 'Ya se generó la lista de asistencia para este curso y turno.' }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
@@ -43,6 +58,7 @@
         </div>
     </div>
 
+    {{-- Tabla de asistencias registradas --}}
     <div class="card mt-4 shadow-sm">
         <div class="card-header bg-secondary text-white">
             <h5 class="mb-0">Asistencias registradas</h5>
@@ -67,15 +83,6 @@
                                 <a href="{{ route('asistencias.show', $asistencia->asistencia_id) }}" class="btn btn-info btn-sm">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <!--<a href="{{ route('asistencias.edit', $asistencia->asistencia_id) }}" class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('asistencias.destroy', $asistencia->asistencia_id) }}" method="POST" class="d-inline">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar asistencia?')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>-->
                             </td>
                         </tr>
                     @empty
@@ -89,4 +96,18 @@
     </div>
 
 </div>
+
+{{-- Script para ocultar el toast después de 5 segundos --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toastEl = document.getElementById('toast-message');
+        if (toastEl) {
+            setTimeout(() => {
+                toastEl.classList.remove('show');
+                toastEl.style.display = 'none';
+            }, 5000); // 5 segundos
+        }
+    });
+</script>
+
 @endsection

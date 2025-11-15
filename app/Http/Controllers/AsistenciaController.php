@@ -21,58 +21,92 @@ class AsistenciaController extends Controller
     }
 
     // === Genera la lista de asistencia para marcar ===
+        // === Genera la lista de asistencia para marcar ===
     public function generarAsistencia(Request $request)
-    {
-        $request->validate([
-            'fecha' => 'required|date',
-            'curso_id' => 'required|exists:cursos,curso_id',
-            'turno_id' => 'required|exists:turnos,turno_id',
-        ]);
+{
+    // Validación básica
+    $request->validate([
+        'fecha' => 'required|date',
+        'curso_id' => 'required|exists:cursos,curso_id',
+        'turno_id' => 'required|exists:turnos,turno_id',
+    ]);
 
-        $fecha = $request->fecha;
-        $curso_id = $request->curso_id;
-        $turno_id = $request->turno_id;
+    $fecha = $request->fecha;
+    $curso_id = $request->curso_id;
+    $turno_id = $request->turno_id;
 
-        $curso = Curso::find($curso_id);
-        $turno = Turno::find($turno_id);
-        $asistencias = new Asistencia();
+    $curso = Curso::find($curso_id);
+    $turno = Turno::find($turno_id);
 
-        // Traer inscripciones que coincidan con curso y turno
-        $inscripciones = Inscripcione::with('infante', 'curso', 'turno')
-            ->where('curso_id', $curso_id)
-            ->where('turno_id', $turno_id)
-            ->get();
+    // ✅ Evitar duplicados: buscar asistencia existente a través de detalleAsistencias
+    $existe = Asistencia::where('fecha', $fecha)
+        ->whereHas('detalleAsistencias.inscripcion', function ($q) use ($curso_id, $turno_id) {
+            $q->where('curso_id', $curso_id)
+              ->where('turno_id', $turno_id);
+        })
+        ->exists();
 
-        if ($inscripciones->isEmpty()) {
-            return redirect()->back()->with('warning', 'No hay inscripciones para el curso y turno seleccionados.');
-        }
-
-        return view('asistencias.create', compact('asistencias', 'fecha', 'curso', 'turno', 'inscripciones'));
+    if ($existe) {
+        // Mostrar mensaje en la interfaz
+        return redirect()->back()->with('warning', 'Ya se generó la asistencia para este curso y turno en esta fecha.');
     }
 
-    // === Guarda la asistencia y sus detalles ===
-    public function store(Request $request)
-    {
-        $request->validate([
-            'fecha' => 'required|date',
-            'detalles' => 'required|array',
-            'detalles.*' => 'required|in:presente,ausente,licencia',
-        ]);
+    // Obtener inscripciones del curso y turno
+    $inscripciones = Inscripcione::with('infante')
+        ->where('curso_id', $curso_id)
+        ->where('turno_id', $turno_id)
+        ->get();
 
-        // Crear cabecera
-        $asistencia = Asistencia::create(['fecha' => $request->fecha]);
-
-        // Crear detalles
-        foreach ($request->detalles as $inscripcion_id => $observacion) {
-            DetalleAsistencia::create([
-                'asistencia_id' => $asistencia->asistencia_id,
-                'inscripcion_id' => $inscripcion_id,
-                'observacion' => $observacion,
-            ]);
-        }
-
-        return redirect()->route('asistencias.index')->with('success', 'Asistencia registrada correctamente.');
+    if ($inscripciones->isEmpty()) {
+        return redirect()->back()->with('warning', 'No hay inscripciones para el curso y turno seleccionados.');
     }
+
+    // Mostrar formulario de creación de asistencia
+    return view('asistencias.create', compact('fecha', 'curso', 'turno', 'inscripciones'));
+}
+
+
+
+// === Guarda la asistencia y sus detalles ===
+public function store(Request $request)
+{
+    $request->validate([
+        'fecha' => 'required|date',
+        'detalles' => 'required|array',
+        'detalles.*' => 'required|in:presente,ausente,licencia',
+    ]);
+
+    $fecha = $request->fecha;
+
+    // ✅ Validación: evitar duplicar la lista si ya existe
+    $curso_id = array_keys($request->detalles)[0] ?? null; // Tomamos el primer inscripcion_id para identificar curso/turno
+    $inscripcion = Inscripcione::find($curso_id);
+    if ($inscripcion) {
+        $existe = Asistencia::where('fecha', $fecha)
+            ->whereHas('detalleAsistencias.inscripcion', function($q) use ($inscripcion) {
+                $q->where('curso_id', $inscripcion->curso_id)
+                    ->where('turno_id', $inscripcion->turno_id);
+            })->exists();
+
+        if ($existe) {
+            return redirect()->back()->with('warning', 'Ya se registró la asistencia para este curso y turno en esta fecha.');
+        }
+    }
+
+    // Crear cabecera de asistencia
+    $asistencia = Asistencia::create(['fecha' => $fecha]);
+
+    // Crear detalles
+    foreach ($request->detalles as $inscripcion_id => $observacion) {
+        DetalleAsistencia::create([
+            'asistencia_id' => $asistencia->asistencia_id,
+            'inscripcion_id' => $inscripcion_id,
+            'observacion' => $observacion,
+        ]);
+    }
+
+    return redirect()->route('asistencias.index')->with('success', 'Asistencia registrada correctamente.');
+}
 
     // === Mostrar detalles de una asistencia ===
     public function show(Asistencia $asistencia)
