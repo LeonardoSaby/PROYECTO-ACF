@@ -244,11 +244,7 @@ return [
                             'url'  => 'roles',
                             'icon' => 'fas fa-user-shield',
                         ],
-                        [
-                            'text' => 'Permisos',
-                            'url'  => 'permisos',
-                            'icon' => 'fas fa-key',
-                        ],
+                        
                                 
                             ],
                         ],

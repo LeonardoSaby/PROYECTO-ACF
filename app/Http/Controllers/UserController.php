@@ -3,108 +3,80 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use App\Http\Requests\UserRequest;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
-use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request): View
+    public function index()
     {
-        $search = $request->input('search');
-        $users = User::when($search, function ($query, $search) {
-            return $query->where('name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
-        })->paginate();
-
+        $users = User::with('roles')->paginate(10);
         return view('user.index', compact('users'))
-            ->with('i', ($request->input('page', 1) - 1) * $users->perPage());
+               ->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
+    public function create()
     {
-        $user = new User();
-        $roles = Role::all(); // Trae todos los roles
-
-        return view('user.create', compact('user', 'roles'));
+        $roles = Role::all();
+        return view('user.create', compact('roles'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(UserRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        User::create($request->validated());
+        $request->validate([
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:8',
+            'roles'    => 'required|array|min:1', // MULTI-ROL
+        ]);
 
-        return Redirect::route('users.index')
-            ->with('success', 'User created successfully.');
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Asignación múltiple real
+        $roleNames = Role::whereIn('id', $request->roles)->pluck('name')->toArray();
+        $user->syncRoles($roleNames);
+
+        return redirect()->route('users.index')->with('success', 'Usuario creado correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id): View
+    public function edit(User $user)
     {
-        $user = User::find($id);
-
-        return view('user.show', compact('user'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id): View
-    {
-        $user = User::find($id);
-        $roles = Role::all(); // Trae todos los roles
-
+        $roles = Role::all();
         return view('user.edit', compact('user', 'roles'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, User $user)
-{
-    // Aquí va la validación
-    $request->validate([
-        'email' => [
-            'required',
-            'email',
-            Rule::unique('users')->ignore($user->id),
-        ],
-        'password' => 'sometimes|nullable|min:6',
-    ]);
+    {
+        $request->validate([
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:8',
+            'roles'    => 'required|array|min:1', // MULTI-ROL
+        ]);
 
-    // Actualizar usuario
-    $user->name = $request->name;
-    $user->email = $request->email;
+        $user->update([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => $request->filled('password')
+                ? Hash::make($request->password)
+                : $user->password,
+        ]);
 
-    if($request->password){
-        $user->password = bcrypt($request->password);
+        // Actualiza roles
+        $roleNames = Role::whereIn('id', $request->roles)->pluck('name')->toArray();
+        $user->syncRoles($roleNames);
+
+        return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente.');
     }
 
-    $user->save();
-
-    return redirect()->route('users.index')->with('success', 'Usuario actualizado');
-}
-
-
-    public function destroy($id): RedirectResponse
+    public function destroy(User $user)
     {
-        User::find($id)->delete();
-
-        return Redirect::route('users.index')
-            ->with('success', 'User deleted successfully');
+        $user->delete();
+        return redirect()->route('users.index')->with('success', 'Usuario eliminado correctamente.');
     }
 }

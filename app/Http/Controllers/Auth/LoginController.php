@@ -37,4 +37,26 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+/* 
+    class LoginController extends Controller
+{
+    use AuthenticatesUsers;
+
+    // Redirige al usuario después de iniciar sesión
+    protected $redirectTo = '/home';
+
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+    }
+
+    public function showLoginForm()
+    {
+        // Esta es la línea que debes modificar
+        // Retornará la vista que acabas de crear
+        return view('auth.login_personalizado');
+    }
+        */
+
 }

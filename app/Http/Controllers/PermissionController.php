@@ -4,98 +4,55 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class PermissionController extends Controller
 {
-    /**
-     * Mostrar listado de permisos
-     */
+    public function __construct()
+    {
+        $this->middleware('role:administrador');
+    }
+
     public function index()
     {
-        $permisos = Permission::with('roles')->paginate(10);
-        return view('permisos.index', compact('permisos'));
+        $permissions = Permission::all();
+        return view('permissions.index', compact('permissions'));
     }
 
-    /**
-     * Mostrar formulario para crear un permiso
-     */
     public function create()
     {
-        return view('permisos.create');
+        return view('permissions.create');
     }
 
-    /**
-     * Guardar nuevo permiso
-     */
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|unique:permissions,name',
         ]);
 
-        Permission::create([
-            'name' => $request->name,
-            'guard_name' => 'web',
-        ]);
+        Permission::create(['name' => $request->name]);
 
-        return redirect()->route('permisos.index')
-            ->with('success', 'Permiso creado correctamente.');
+        return redirect()->route('permissions.index')->with('success', 'Permiso creado correctamente');
     }
 
-    /**
-     * Mostrar formulario para editar un permiso
-     */
-    public function edit($id)
+    public function edit(Permission $permission)
     {
-        $permiso = Permission::findOrFail($id);
-
-        // ✅ Aquí cargamos los roles para los checkboxes
-        $roles = Role::all();
-        $rolesAsignados = $permiso->roles->pluck('id')->toArray();
-
-        return view('permisos.edit', compact('permiso', 'roles', 'rolesAsignados'));
+        return view('permissions.edit', compact('permission'));
     }
 
-    /**
-     * Actualizar permiso y su asignación a roles
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, Permission $permission)
     {
-        $permiso = Permission::findOrFail($id);
-
         $request->validate([
-            'name' => 'required|unique:permissions,name,' . $permiso->id,
+            'name' => 'required|unique:permissions,name,' . $permission->id,
         ]);
 
-        $permiso->update([
-            'name' => $request->name,
-        ]);
+        $permission->update(['name' => $request->name]);
 
-        // ✅ Actualizamos los roles asignados
-        $rolesSeleccionados = $request->input('roles', []);
-        $roles = Role::all();
-
-        foreach ($roles as $rol) {
-            if (in_array($rol->id, $rolesSeleccionados)) {
-                $rol->givePermissionTo($permiso);
-            } else {
-                $rol->revokePermissionTo($permiso);
-            }
-        }
-
-        return redirect()->route('permisos.index')
-            ->with('success', 'Permiso actualizado correctamente.');
+        return redirect()->route('permissions.index')->with('success', 'Permiso actualizado correctamente');
     }
 
-    /**
-     * Eliminar permiso
-     */
-    public function destroy($id)
+    public function destroy(Permission $permission)
     {
-        Permission::findOrFail($id)->delete();
-
-        return redirect()->route('permisos.index')
-            ->with('success', 'Permiso eliminado correctamente.');
+        $permission->delete();
+        return redirect()->route('permissions.index')->with('success', 'Permiso eliminado correctamente');
     }
 }

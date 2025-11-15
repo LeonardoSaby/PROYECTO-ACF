@@ -1,78 +1,75 @@
-<div class="row p-1">
-    <div class="col-md-12">
-        <!-- Nombre -->
-        <div class="form-group mb-3">
-            <label for="name" class="form-label">{{ __('Nombre') }}</label>
-            <input 
-                type="text" 
-                name="name" 
-                class="form-control @error('name') is-invalid @enderror" 
-                value="{{ old('name', $user?->name) }}" 
-                id="name" 
-                placeholder="Nombre completo"
-                required>
-            {!! $errors->first('name', '<div class="invalid-feedback"><strong>:message</strong></div>') !!}
-        </div>
+@csrf
 
-        <!-- Email -->
-        <div class="form-group mb-3">
-            <label for="email" class="form-label">{{ __('Correo electrónico') }}</label>
-            <input 
-                type="email" 
-                name="email" 
-                class="form-control @error('email') is-invalid @enderror" 
-                value="{{ old('email', $user?->email) }}" 
-                id="email" 
-                placeholder="usuario@correo.com"
-                required>
-            {!! $errors->first('email', '<div class="invalid-feedback"><strong>:message</strong></div>') !!}
-        </div>
+<div class="card shadow-lg border-0 p-4 rounded-4" style="max-width: 600px; margin:auto; background: #f8f9fc;">
+    <h3 class="mb-4 text-center fw-bold">Formulario de Usuario</h3>
 
-        <!-- Rol -->
-        <div class="form-group mb-3">
-            <label for="role_id" class="form-label">{{ __('Rol del usuario') }}</label>
-            <select 
-                name="role_id" 
-                id="role_id" 
-                required 
-                class="form-control @error('role_id') is-invalid @enderror">
-                <option value="">Seleccione rol</option>
-                @foreach($roles as $role)
-                    <option value="{{ $role->id }}" {{ old('role_id', $user?->role_id) == $role->id ? 'selected' : '' }}>
+    {{-- Nombre --}}
+    <div class="mb-3">
+        <label for="name" class="form-label fw-semibold">Nombre</label>
+        <input 
+            type="text" 
+            name="name" 
+            id="name"
+            class="form-control rounded-3"
+            placeholder="Nombre"
+            value="{{ old('name', $user->name ?? '') }}"
+            required>
+    </div>
+
+    {{-- Email --}}
+    <div class="mb-3">
+        <label for="email" class="form-label fw-semibold">Email</label>
+        <input 
+            type="email" 
+            name="email" 
+            id="email"
+            class="form-control rounded-3"
+            placeholder="Email"
+            value="{{ old('email', $user->email ?? '') }}"
+            required>
+    </div>
+
+    {{-- Contraseña --}}
+    <div class="mb-3">
+        <label for="password" class="form-label fw-semibold">Contraseña</label>
+        <input 
+            type="password" 
+            name="password"
+            id="password"
+            class="form-control rounded-3"
+            placeholder="{{ isset($user) ? 'Dejar vacío para mantener actual' : 'Contraseña' }}"
+            {{ isset($user) ? '' : 'required' }}>
+    </div>
+
+    {{-- Roles --}}
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Asignar Roles</label>
+
+        <div class="p-3 rounded-3" style="background:#fff; border:1px solid #ddd;">
+            @foreach ($roles as $role)
+                <div class="form-check mb-2">
+                    <input 
+                        class="form-check-input"
+                        type="checkbox"
+                        name="roles[]"
+                        id="role{{ $role->id }}"
+                        value="{{ $role->id }}"
+
+                        {{-- Marcar roles que el usuario ya tiene --}}
+                        @if( isset($user) && $user->roles->contains('id', $role->id) )
+                            checked
+                        @endif
+                    >
+
+                    <label class="form-check-label" for="role{{ $role->id }}">
                         {{ $role->name }}
-                    </option>
-                @endforeach
-            </select>
-            {!! $errors->first('role_id', '<div class="invalid-feedback"><strong>:message</strong></div>') !!}
-        </div>
-
-        <!-- Contraseña -->
-        <div class="form-group mb-3">
-            <label for="password" class="form-label">{{ __('Contraseña') }}</label>
-            <div class="input-group">
-                <input 
-                    type="password" 
-                    name="password" 
-                    class="form-control @error('password') is-invalid @enderror" 
-                    id="password" 
-                    placeholder="Contraseña (mínimo 8 caracteres)"
-                    {{ isset($user) ? '' : 'required' }}>
-                <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">Mostrar</button>
-            </div>
-            {!! $errors->first('password', '<div class="invalid-feedback"><strong>:message</strong></div>') !!}
+                    </label>
+                </div>
+            @endforeach
         </div>
     </div>
 
-    <!-- Botón Guardar -->
-    <div class="col-md-12 mt-3">
-        <button type="submit" class="btn btn-primary">{{ __('Guardar') }}</button>
-        <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancelar</a>
-    </div>
+    <button class="btn btn-primary w-100 rounded-3 py-2 fw-bold">
+        Guardar
+    </button>
 </div>
-
-<script>
-function togglePassword() {
-    const input = document.getElementById('password');
-    input.type = input.type === 'password' ? 'text' : 'password';
-}
-</script>

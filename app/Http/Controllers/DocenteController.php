@@ -69,7 +69,7 @@ class DocenteController extends Controller
 
     // Asignar rol (si usas Spatie)
     if (method_exists($user, 'assignRole')) {
-        $user->assignRole('docente');
+        $user->assignRole('Docente');
     }
 
     return redirect()->route('docentes.index')->with('success', 'Docente registrado correctamente.');
