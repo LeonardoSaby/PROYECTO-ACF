@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('salas', function (Blueprint $table) {
-            $table->id();
+            $table->id('sala_id');
             $table->string('nombre_sala')->unique();
             $table->integer('capacidad_maxima')->nullable();
             $table->enum('estado', ['activo', 'inactivo'])->default('activo');

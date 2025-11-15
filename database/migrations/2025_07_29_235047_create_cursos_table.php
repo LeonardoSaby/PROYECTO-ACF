@@ -12,18 +12,15 @@ return new class extends Migration
     public function up(): void
 {
     Schema::create('cursos', function (Blueprint $table) {
-        $table->id();
-        $table->string('nombre_curso');
+        $table->id('curso_id');
+        $table->string('nombre_curso')->unique();
 
         
         $table->unsignedBigInteger('nivel_id');
         $table->unsignedBigInteger('sala_id');
-        $table->unsignedBigInteger('docente_id');
 
-       
-        $table->foreign('nivel_id')->references('id')->on('niveles')->onDelete('cascade');
-        $table->foreign('sala_id')->references('id')->on('salas')->onDelete('cascade');
-        $table->foreign('docente_id')->references('id')->on('docentes')->onDelete('cascade');
+        $table->foreign('nivel_id')->references('nivel_id')->on('niveles')->onDelete('cascade');
+        $table->foreign('sala_id')->references('sala_id')->on('salas')->onDelete('cascade');
 
         $table->enum('estado', ['activo', 'inactivo'])->default('activo');
         $table->timestamps();

@@ -3,6 +3,18 @@
 
 <head>
 
+
+    <!-- CSS de Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- JS de Select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+
+
+
+
     {{-- Base Meta Tags --}}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,7 +34,7 @@
     {{-- Custom stylesheets (pre AdminLTE) --}}
     @yield('adminlte_css_pre')
 
-    {{-- Base Stylesheets (depends on Laravel asset bundling tool) --}}
+    {{-- Base Stylesheets --}}
     @if(config('adminlte.enabled_laravel_mix', false))
         <link rel="stylesheet" href="{{ mix(config('adminlte.laravel_mix_css_path', 'css/app.css')) }}">
     @else
@@ -43,7 +55,6 @@
                 <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
                 <link rel="stylesheet" href="{{ asset('vendor/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
                 <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
-
                 @if(config('adminlte.google_fonts.allowed', true))
                     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
                 @endif
@@ -64,6 +75,51 @@
 
     {{-- Custom Stylesheets (post AdminLTE) --}}
     @yield('adminlte_css')
+
+    {{-- 🔹 Estilo exclusivo para LOGIN --}}
+    <style>
+        body.login-page {
+            background: linear-gradient(135deg, #007bff 0%, #6610f2 100%) !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            width: 380px;
+            margin: 20px auto;
+        }
+
+        .login-logo a {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .login-box .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        .login-box .card-header {
+            border-bottom: none;
+            background: #fff;
+        }
+
+        .login-box .card-body {
+            background: #fff;
+            border-radius: 0 0 1rem 1rem;
+        }
+
+        .login-box .card-footer {
+            background: #f8f9fa;
+            border-top: none;
+        }
+    </style>
 
     {{-- Favicon --}}
     @if(config('adminlte.use_ico_only'))
@@ -95,7 +151,7 @@
     {{-- Body Content --}}
     @yield('body')
 
-    {{-- Base Scripts (depends on Laravel asset bundling tool) --}}
+    {{-- Base Scripts --}}
     @if(config('adminlte.enabled_laravel_mix', false))
         <script src="{{ mix(config('adminlte.laravel_mix_js_path', 'js/app.js')) }}"></script>
     @else
@@ -132,5 +188,4 @@
     @yield('adminlte_js')
 
 </body>
-
 </html>

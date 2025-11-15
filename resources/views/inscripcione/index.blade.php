@@ -5,82 +5,97 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-sm-12">
 
-                            <span id="card_title">
-                                {{ __('Administrar Inscripciones') }}
-                            </span>
+            {{-- Card principal --}}
+            <div class="card shadow-lg rounded-4">
+                <div class="card-header bg-gradient-primary text-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <h3 class="card-title mb-0"><i class="fas fa-file-alt"></i> Administrar Inscripciones</h3>
 
-                            <form action="{{ route('inscripciones.index') }}" method="GET" class="form-inline">
-                            <input type="text" name="search" class="form-control form-control-sm mr-2"
-                                placeholder="Buscar..." value="{{ request('search') }}">
-                            <button type="submit" class="btn btn-sm btn-secondary">Buscar</button>
+                    {{-- Botones y PDF --}}
+                    <div class="d-flex gap-1 flex-wrap align-items-center">
+{{-- BUSCADOR --}}
+                        <form action="{{ route('inscripciones.index') }}" method="GET" class="d-flex">
+                            <input
+                                type="text"
+                                name="search"
+                                placeholder="Buscar..."
+                                value="{{ request('search') }}"
+                                class="form-control form-control-sm"
+                                style="max-width: 180px;"
+                            >
+                            <button class="btn btn-light btn-sm ms-1" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </form>
 
-                             <div class="float-right">
-                                 <a href="{{ route('inscripciones.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
-                                     {{ __('Registrar Inscripcion') }}
-                                 </a>
-                             </div>
-                        </div>
-                    </div>
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success m-4">
-                            <p>{{ $message }}</p>
-                        </div>
-                        
-                    @endif
+                        {{-- Crear inscripción --}}
+                        <a href="{{ route('inscripciones.create') }}" class="btn btn-success btn-sm">
+                            <i class="fas fa-plus"></i> Registrar Inscripción
+                        </a>
 
-                    <div class="card-body bg-white">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead class="thead">
-                                    <tr>
-                                        <th>No</th>
-
-                                    
-                                        <th >Infante</th>
-                                        <th >Curso</th>
-                                        <th >Turno</th>
-                                        <th >Fecha de registro</th>
-
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($inscripciones as $inscripcione)
-                                        <tr>
-                                            <td>{{ ++$i }}</td>
-                                            <td >{{ $inscripcione->infante->nombre_infante .' '.$inscripcione->infante->apellido_infante }}</td>
-                                            
-                                            {{-- USAR ESTA LÍNEA ES CRUCIAL PARA LA SEGURIDAD Y LA LECTURA DE DATOS --}}
-                                            <td >{{ $inscripcione->curso?->nombre_curso ?? 'Sin curso asignado' }}</td> 
-                                            
-                                            <td >{{ $inscripcione->turno->nombre_turno }}</td>
-                                            <td >{{ $inscripcione->fecha }}</td>
-
-                                                <td>
-                                                    <form action="{{ route('inscripciones.destroy', $inscripcione->id) }}" method="POST">
-                                                        <a class="btn btn-sm btn-success" href="{{ route('inscripciones.edit', $inscripcione->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Editar') }}</a>
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        {{-- Se reemplaza confirm() por un manejo personalizado para evitar el uso de funciones bloqueantes --}}
-                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="event.preventDefault(); if(confirm('¿Estás seguro de que quieres eliminar esta inscripción?')) { this.closest('form').submit(); }"><i class="fa fa-fw fa-trash"></i> {{ __('Eliminar') }}</button>
-                                                    </form>
-                                                </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
+
+                {{-- Mensaje de éxito --}}
+                @if ($message = Session::get('success'))
+                    <div class="alert alert-success m-4">
+                        <p>{{ $message }}</p>
+                    </div>
+                @endif
+
+                {{-- Tabla de inscripciones --}}
+                <div class="card-body bg-light p-3">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered align-middle text-center">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Infante</th>
+                                    <th>Curso</th>
+                                    <th>Turno</th>
+                                    <th>Fecha de registro</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($inscripciones as $index => $inscripcione)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $inscripcione->infante->nombre_infante }} {{ $inscripcione->infante->apellido_infante }}</td>
+                                        <td>{{ $inscripcione->curso?->nombre_curso ?? 'Sin curso asignado' }}</td>
+                                        <td>{{ $inscripcione->turno->nombre_turno }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($inscripcione->fecha)->format('d/m/Y') }}</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ route('inscripciones.edit', $inscripcione->inscripcion_id) }}" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </a>
+                                                <form action="{{ route('inscripciones.destroy', $inscripcione->inscripcion_id) }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="event.preventDefault(); if(confirm('¿Estás seguro de eliminar esta inscripción?')) { this.closest('form').submit(); }">
+                                                        <i class="fas fa-trash"></i> Eliminar
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- Paginación --}}
+                <div class="card-footer d-flex justify-content-end">
+                    {!! $inscripciones->withQueryString()->links() !!}
+                </div>
             </div>
+
         </div>
     </div>
+</div>
 @endsection

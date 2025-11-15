@@ -16,7 +16,7 @@ class SalaController extends Controller
      */
     public function index(Request $request): View
     {
-        $salas = Sala::paginate();
+        $salas = Sala::where('estado', 'activo')->paginate();
 
         return view('sala.index', compact('salas'))
             ->with('i', ($request->input('page', 1) - 1) * $salas->perPage());
@@ -40,15 +40,15 @@ class SalaController extends Controller
         Sala::create($request->validated());
 
         return Redirect::route('salas.index')
-            ->with('success', 'Sala created successfully.');
+            ->with('success', 'Sala registrada exitosamente.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id): View
+    public function show($sala_id): View
     {
-        $sala = Sala::find($id);
+        $sala = Sala::find($sala_id);
 
         return view('sala.show', compact('sala'));
     }
@@ -56,9 +56,9 @@ class SalaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id): View
+    public function edit($sala_id): View
     {
-        $sala = Sala::find($id);
+        $sala = Sala::find($sala_id);
 
         return view('sala.edit', compact('sala'));
     }
@@ -71,14 +71,14 @@ class SalaController extends Controller
         $sala->update($request->validated());
 
         return Redirect::route('salas.index')
-            ->with('success', 'Sala updated successfully');
+            ->with('success', 'Sala modificada exitosamente');
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy($sala_id): RedirectResponse
     {
-        Sala::find($id)->delete();
+        Sala::find($sala_id)->update(['estado' => 'inactivo']);
 
         return Redirect::route('salas.index')
-            ->with('success', 'Sala deleted successfully');
+            ->with('success', 'Sala eliminada exitosamente');
     }
 }

@@ -28,6 +28,7 @@ class Nivele extends Model
      *
      * @var array<int, string>
      */
+    protected $primaryKey = 'nivel_id';
     protected $fillable = ['nombre_nivel', 'edad_minima', 'edad_maxima', 'estado'];
 
 

@@ -28,6 +28,8 @@ class Turno extends Model
      *
      * @var array<int, string>
      */
+        protected $primaryKey = 'turno_id';
+
     protected $fillable = ['nombre_turno', 'hora_inicio', 'hora_fin', 'estado'];
 
 

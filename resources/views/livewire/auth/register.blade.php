@@ -13,7 +13,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
-    public string $rol_id = '';
+
 
     /**
      * Handle an incoming registration request.
@@ -24,7 +24,6 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
-            'rol_id' => ['required', 'string', 'max:255'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -84,15 +83,6 @@ new #[Layout('components.layouts.auth')] class extends Component {
             required
             autocomplete="new-password"
             :placeholder="__('Confirm password')"
-            viewable
-        />
-        <flux:input
-            wire:model="rol_id"
-            :label="__('Rol')"
-            type="text"
-            required
-            autocomplete="new-rol_id"
-            :placeholder="__('Rol')"
             viewable
         />
 

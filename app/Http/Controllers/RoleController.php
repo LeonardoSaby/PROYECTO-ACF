@@ -76,7 +76,7 @@ class RoleController extends Controller
 
     public function destroy($id): RedirectResponse
     {
-        Role::find($id)->delete();
+        Role::find($id)->update(['estado' => 'inactivo']);
 
         return Redirect::route('roles.index')
             ->with('success', 'Role deleted successfully');

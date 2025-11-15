@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Models\Nivele;
 use App\Models\Sala;
-use App\Models\Docente;
 
 class CursoController extends Controller
 {
@@ -19,7 +18,7 @@ class CursoController extends Controller
      */
     public function index(Request $request): View
     {
-        $cursos = Curso::paginate();
+    $cursos = Curso::where('estado', 'activo')->paginate();
 
         return view('curso.index', compact('cursos'))
             ->with('i', ($request->input('page', 1) - 1) * $cursos->perPage());
@@ -33,9 +32,8 @@ class CursoController extends Controller
         $curso = new Curso();
         $niveles = Nivele::all();
         $salas = Sala::all();
-        $docentes = Docente::all();
 
-        return view('curso.create', compact('niveles','salas','docentes','curso'));
+        return view('curso.create', compact('niveles','salas','curso'));
     }
 
     /**
@@ -52,9 +50,9 @@ class CursoController extends Controller
     /**
      * Muestra la información de un curso específico.
      */
-    public function show($id): View
+    public function show($curso_id): View
     {
-        $curso = Curso::find($id);
+        $curso = Curso::find($curso_id);
 
         return view('curso.show', compact('curso'));
     }
@@ -62,14 +60,13 @@ class CursoController extends Controller
     /**
      * Muestra el formulario de edición de un curso.
      */
-    public function edit($id): View
+    public function edit($curso_id): View
     {
-        $curso = Curso::find($id);
+        $curso = Curso::find($curso_id);
         $niveles = Nivele::all();
         $salas = Sala::all();
-        $docentes = Docente::all();
 
-        return view('curso.edit', compact('curso','niveles','salas','docentes'));
+        return view('curso.edit', compact('curso','niveles','salas'));
     }
 
     /**
@@ -86,9 +83,9 @@ class CursoController extends Controller
     /**
      * Elimina un curso de la base de datos.
      */
-    public function destroy($id): RedirectResponse
+    public function destroy($curso_id): RedirectResponse
     {
-        Curso::find($id)->delete();
+        Curso::find($curso_id)->update(['estado' => 'inactivo']);
 
         return Redirect::route('cursos.index')
             ->with('success', 'Curso eliminado correctamente.');

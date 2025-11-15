@@ -25,7 +25,6 @@ class TurnoRequest extends FormRequest
 			'nombre_turno' => 'required|string',
 			'hora_inicio' => 'required',
 			'hora_fin' => 'required',
-			'estado' => 'required',
         ];
     }
 }

@@ -37,7 +37,6 @@ class UserRequest extends FormRequest
             Rule::unique('users')->ignore($userId),
         ],
         'password' => 'nullable|min:6',
-        'rol_id' => 'required|exists:roles,id',
     ];
 }
 public function messages()
@@ -51,8 +50,7 @@ public function messages()
         'email.email' => 'El correo electrónico debe ser una dirección válida.',
         'email.unique' => 'El correo electrónico ya está en uso.',
         'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
-        'rol_id.required' => 'El rol es obligatorio.',
-        'rol_id.exists' => 'El rol seleccionado no es válido.',
+
     ];
 }
 }

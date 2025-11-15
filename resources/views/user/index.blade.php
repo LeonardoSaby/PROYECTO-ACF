@@ -43,7 +43,6 @@
                                         
 									<th >Name</th>
 									<th >Email</th>
-                                    <th >Rol</th>
 
                                         <th></th>
                                     </tr>
@@ -55,7 +54,6 @@
                                             
 										<td >{{ $user->name }}</td>
 										<td >{{ $user->email }}</td>
-                                        <td >{{ $user->rol?->nombre }}</td>
 
                                             <td>
                                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST">

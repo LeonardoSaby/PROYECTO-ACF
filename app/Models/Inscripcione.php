@@ -9,23 +9,23 @@ class Inscripcione extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'inscripcion_id';
+
     protected $table = 'inscripciones'; // ajusta si tu tabla tiene otro nombre
 
     protected $fillable = ['infante_id', 'curso_id', 'turno_id', 'fecha'];
 
 
-    public function infante()
-    {
-        return $this->belongsTo(Infante::class);
+    public function infante() {
+        return $this->belongsTo(Infante::class, 'infante_id', 'infante_id');
     }
 
-    public function curso()
-    {
-        return $this->belongsTo(Curso::class);
+    public function curso() {
+        return $this->belongsTo(Curso::class, 'curso_id', 'curso_id');
     }
 
-    public function turno()
-    {
-        return $this->belongsTo(Turno::class);
+    public function turno() {
+        return $this->belongsTo(Turno::class, 'turno_id', 'turno_id');
     }
+
 }

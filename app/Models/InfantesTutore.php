@@ -24,7 +24,6 @@ class InfantesTutore extends Model
 {
     
     protected $perPage = 20;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -32,13 +31,14 @@ class InfantesTutore extends Model
      */
     protected $fillable = ['infante_id', 'tutor_id', 'parentesco', 'estado'];
 
+    protected $primaryKey = 'infante_tutor_id';
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function infante()
     {
-        return $this->belongsTo(\App\Models\Infante::class, 'infante_id', 'id');
+        return $this->belongsTo(\App\Models\Infante::class);
     }
     
     /**
@@ -46,7 +46,7 @@ class InfantesTutore extends Model
      */
     public function tutore()
     {
-        return $this->belongsTo(\App\Models\Tutore::class, 'tutor_id', 'id');
+        return $this->belongsTo(\App\Models\Tutore::class);
     }
     
 }

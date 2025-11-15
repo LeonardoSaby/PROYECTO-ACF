@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property $id
  * @property $nivel_id
  * @property $sala_id
- * @property $docente_id
+
  * @property $estado
  * @property $created_at
  * @property $updated_at
  *
- * @property Docente $docente
+
  * @property Nivele $nivele
  * @property Sala $sala
  * @package App
@@ -31,35 +31,33 @@ class Curso extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['nombre_curso', 'nivel_id', 'sala_id', 'docente_id', 'estado'];
+        protected $primaryKey = 'curso_id';
 
+    protected $fillable = ['nombre_curso', 'nivel_id', 'sala_id', 'estado'];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function docente()
-    {
-        return $this->belongsTo(\App\Models\Docente::class, 'docente_id', 'id');
-    }
-    
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function nivele()
-    {
-        return $this->belongsTo(\App\Models\Nivele::class, 'nivel_id', 'id');
-    }
-    
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
+    // Curso.php
     public function sala()
     {
-        return $this->belongsTo(\App\Models\Sala::class, 'sala_id', 'id');
+        return $this->belongsTo(Sala::class, 'sala_id');
     }
-    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+
+    public function nivel()
+    {
+        return $this->belongsTo(Nivele::class, 'nivel_id');
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+    public function inscripciones()
+    {
+        return $this->hasMany(Inscripcione::class, 'curso_id', 'curso_id');
+    }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+
     
 }

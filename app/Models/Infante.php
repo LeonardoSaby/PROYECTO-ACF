@@ -31,11 +31,23 @@ class Infante extends Model
      *
      * @var array<int, string>
      */
+    protected $primaryKey = 'infante_id';
+
     protected $fillable = ['nombre_infante', 'apellido_infante', 'CI_infante', 'fecha_nacimiento_infante', 'edad_infante', 'genero_infante', 'estado'];
 
     public function inscripciones()
-{
-    return $this->hasMany(\App\Models\Inscripcione::class, 'infante_id');
-}
+    {
+        return $this->hasMany(\App\Models\Inscripcione::class, 'infante_id');
+    }
+    public function tutores()
+    {
+        return $this->belongsToMany(Tutore::class, 'infantes_tutores', 'infante_id', 'tutor_id')
+                    ->withPivot('parentesco', 'estado')
+                    ->withTimestamps();
+    }
+
+
+
+
 
 }

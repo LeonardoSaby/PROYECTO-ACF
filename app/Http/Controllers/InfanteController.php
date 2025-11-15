@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Infante;
+use App\Models\Tutore;
+use App\Models\InfantesTutore;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\InfanteRequest;
@@ -11,96 +13,110 @@ use Illuminate\View\View;
 
 class InfanteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request): View
     {
         $search = $request->input('search');
-        
 
         $infantes = Infante::query()
-            -> where ('estado', 'Activo')
-
+            ->where('estado', 'Activo')
             ->when($search, function ($query, $search) {
                 return $query->where('nombre_infante', 'like', "%{$search}%")
                              ->orWhere('apellido_infante', 'like', "%{$search}%")
                              ->orWhere('CI_infante', 'like', "%{$search}%");
-            })->paginate(10);
+            })
+            ->paginate(1000);
 
         return view('infante.index', compact('infantes', 'search'))
-         ->with('i', (request()->input('page', 1) - 1) * $infantes->perPage());
+            ->with('i', (request()->input('page', 1) - 1) * $infantes->perPage());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): View
     {
         $infante = new Infante();
+        $tutores = Tutore::all();
 
-        return view('infante.create', compact('infante'));
+        return view('infante.create', compact('infante', 'tutores'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(InfanteRequest $request): RedirectResponse
     {
-        Infante::create($request->validated());
+        $infante = Infante::create($request->validated());
 
-        return Redirect::route('infantes.index')
-            ->with('success', 'Infante created successfully.');
+        if ($request->tutores && $request->parentezcos) {
+            $syncData = [];
+            foreach ($request->tutores as $i => $tutorId) {
+                if ($tutorId) {
+                    $syncData[$tutorId] = [
+                        'parentesco' => $request->parentezcos[$i],
+                        'estado' => 'activo'
+                    ];
+                }
+            }
+            $infante->tutores()->sync($syncData);
+        }
+
+        return redirect()->route('infantes.index')->with('success', 'Infante creado exitosamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id): View
+
+    public function show($infante_id): View
     {
-        $infante = Infante::find($id);
+        // Cargar infante junto con los tutores a través de la tabla pivote
+        $infante = Infante::with('tutores')->findOrFail($infante_id);
 
         return view('infante.show', compact('infante'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id): View
-    {
-        $infante = Infante::find($id);
 
-        return view('infante.edit', compact('infante'));
+
+
+
+    public function edit($infante_id): View
+    {
+        $infante = Infante::with('tutores')->findOrFail($infante_id);
+        $tutores = Tutore::all();
+        return view('infante.edit', compact('infante', 'tutores'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(InfanteRequest $request, Infante $infante): RedirectResponse
+    public function update(InfanteRequest $request, $id): RedirectResponse
     {
+        $infante = Infante::findOrFail($id);
         $infante->update($request->validated());
 
-        return Redirect::route('infantes.index')
-            ->with('success', 'Infante updated successfully');
+        // Mantener tutores asignados
+        $syncData = [];
+        if ($request->tutores && $request->parentezcos) {
+            foreach ($request->tutores as $i => $tutorId) {
+                if ($tutorId) {
+                    $syncData[$tutorId] = [
+                        'parentesco' => $request->parentezcos[$i],
+                        'estado' => 'activo'
+                    ];
+                }
+            }
+        }
+
+        $infante->tutores()->sync($syncData);
+
+        return redirect()->route('infantes.index')->with('success', 'Infante actualizado exitosamente.');
     }
 
-    public function destroy($id): RedirectResponse
+
+    public function destroy($infante_id): RedirectResponse
     {
-        /*Infante::find($id)->delete();
+        $infante = Infante::find($infante_id);
 
-        return Redirect::route('infantes.index')
-            ->with('success', 'Infante deleted successfully');
-            */
-
-        $infante = Infante::find($id);
         if ($infante) {
             $infante->update(['estado' => 'Inactivo']);
 
+            // también eliminamos las relaciones con tutores
+            $infante->tutores()->detach();
+
             return Redirect::route('infantes.index')
-                ->with('success', 'Infante desactivado exitosamente');
+                ->with('success', 'Infante desactivado exitosamente.');
         }
+
         return Redirect::route('infantes.index')
-            ->with('error', 'Infante no encontrado');
-        
+            ->with('error', 'Infante no encontrado.');
     }
 }

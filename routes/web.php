@@ -13,7 +13,8 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\InfantesTutoreController;
 use App\Http\Controllers\InscripcioneController;
 use App\Http\Controllers\AsistenciaController;
-
+use App\Http\Controllers\DetalleAsistenciaController;
+use App\Http\Controllers\ReporteController; 
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
@@ -44,19 +45,40 @@ Route::resource('tutores', TutoreController::class);
 Route::resource('turnos', TurnoController::class);
 Route::resource('niveles', NiveleController::class);
 Route::resource('salas', SalaController::class);
-Route::resource('docentes', DocenteController::class);
 Route::resource('cursos', CursoController::class);
+Route::resource('docentes', DocenteController::class);
 Route::resource('infantes-tutores', InfantesTutoreController::class);
 Route::resource('inscripciones', InscripcioneController::class);
+Route::resource('detalle-asistencias', DetalleAsistenciaController::class);
 
-// *******************************************************************
-// RUTAS DEL MÓDULO DE ASISTENCIA
-// *******************************************************************
+// Rutas de Asistencias
+Route::get('asistencias/generar', [AsistenciaController::class, 'generarAsistencia'])
+    ->name('asistencias.generarAsistencia');
 
-// 1. Ruta principal para el CRUD (index, create, store, show, edit, update, destroy)
 Route::resource('asistencias', AsistenciaController::class);
 
-// 2. RUTA ESPECÍFICA DE AJAX: Generar lista de infantes
-// Nombre: asistencias.partes
-Route::post('asistencias/partes', [AsistenciaController::class, 'generarLista'])
-    ->name('asistencias.lista');
+// ============================================
+// NUEVA RUTA PARA LISTA GENERAL DE INSCRITOS
+// ============================================
+
+      // Vista HTML de la lista general
+Route::get('reportes/inscritos', [ReporteController::class, 'vistaListaGeneral'])
+    ->name('reportes.lista_general');
+    // PDF de la lista general
+Route::get('reportes/inscritos/pdf', [ReporteController::class, 'listaGeneralPDF'])
+    ->name('reportes.lista_general_pdf');
+
+
+    // Formulario de filtrado
+Route::get('reportes/inscritos/filtrar', [ReporteController::class, 'formFiltrar'])
+    ->name('reportes.form_filtrar');
+    // PDF filtrado
+Route::get('reportes/inscritos/por-curso', [ReporteController::class, 'listaFiltradaPDF'])
+    ->name('reportes.lista_filtrada_pdf');
+
+    Route::get('reportes/asistencia/{asistencia}', [ReporteController::class, 'listaAsistenciaPDF'])
+    ->name('reportes.asistencia_pdf');
+// ============================================
+Route::get('reportes/asistencias', [ReporteController::class, 'vistaAsistencias'])
+    ->name('reportes.asistencias');
+

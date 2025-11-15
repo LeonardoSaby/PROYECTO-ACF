@@ -227,48 +227,47 @@ return [
         
         // --- SECCIÓN DE MENÚ COPIADA CON ICONOS CORRECTOS ---
         
-        [
-            'text' => 'Acceso y Seguridad',
-            'icon' => 'fas fa-shield-alt', 
-            'submenu' => [
-                [
-                    'text' => 'Usuarios',
-                    'url' => 'users',
-                    'icon' => 'fas fa-users', 
-                ],
-                
-                [
-                    'text' => 'Roles',
-                    'url' => 'roles',
-                    'icon' => 'fas fa-user-tag', 
-                ],
-            ],
-        ],
+        //acceso y seguridad
+                            //tercer nivel
+                        [
+                            'text' => 'Acceso y Seguridad',
+                            'icon' => 'fas fa-users-cog',
+                            'submenu' => [
+                                [
+                                    'text' => 'Usuarios',
+                                    'url'  => 'users',
+                                    'icon' => 'fas fa-users',
+                                    
+                                ],
+                                [
+                            'text' => 'Roles',
+                            'url'  => 'roles',
+                            'icon' => 'fas fa-user-shield',
+                        ],
+                        [
+                            'text' => 'Permisos',
+                            'url'  => 'permisos',
+                            'icon' => 'fas fa-key',
+                        ],
+                                
+                            ],
+                        ],
         [
             'text' => 'Parametrización',
             'icon' => 'fas fa-cogs', 
-            'submenu' => [
-                [
-                    'text' => 'Infantes',
-                    'url' => 'infantes',
-                    'icon' => 'fas fa-child', 
-                ],
-                
+            'submenu' => [ 
                 [
                     'text' => 'Tutores',
                     'url' => 'tutores',
                     'icon' => 'fas fa-user-friends', 
                 ],
                 [
-                    'text' => 'Turnos',
-                    'url' => 'turnos',
-                    'icon' => 'fas fa-clock', 
+                    'text' => 'Infantes',
+                    'url' => 'infantes',
+                    'icon' => 'fas fa-child', 
                 ],
-                [
-                    'text' => 'Docentes',
-                    'url' => 'docentes',
-                    'icon' => 'fas fa-chalkboard-teacher', 
-                ],
+                
+                
                 [
                     'text' => 'Salas',
                     'url' => 'salas',
@@ -285,9 +284,14 @@ return [
                     'icon' => 'fas fa-book-open', 
                 ],
                 [
-                    'text' => 'Infantes-Tutores',
-                    'url' => 'infantes-tutores',
-                    'icon' => 'fas fa-link', 
+                    'text' => 'Docentes',
+                    'url' => 'docentes',
+                    'icon' => 'fas fa-chalkboard-teacher', 
+                ],
+                [
+                    'text' => 'Turnos',
+                    'url' => 'turnos',
+                    'icon' => 'fas fa-clock', 
                 ],
                 
             ],
@@ -310,6 +314,31 @@ return [
                 
             ],
         ],
+        [
+    'text' => 'Reportes',
+    'icon' => 'fas fa-exchange-alt',
+    'submenu' => [
+        [
+            'text' => 'Lista general de inscritos',
+            'route' => 'reportes.lista_general', // <--- usar 'route' en lugar de 'url'
+            'icon' => 'fas fa-user-plus',
+        ],
+        [
+            'text' => 'Lista filtrada por curso y turno',
+            'url' => 'reportes/inscritos/filtrar', 
+            'icon' => 'fas fa-filter',
+        ],
+        [
+            'text' => 'Lista de Asistencias',
+            'url' => 'reportes/asistencias', // coincide con la ruta
+            'icon' => 'fas fa-file-alt',
+        ],
+        
+    ],
+]
+
+
+
         // --- FIN DE SECCIÓN DE MENÚ COPIADA ---
         
     ],

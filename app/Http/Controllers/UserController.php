@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use App\Models\Role;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -21,8 +21,8 @@ class UserController extends Controller
         $search = $request->input('search');
         $users = User::when($search, function ($query, $search) {
             return $query->where('name', 'like', "%{$search}%")
-                         ->orWhere('email', 'like', "%{$search}%");
-        })->paginate(10);
+                            ->orWhere('email', 'like', "%{$search}%");
+        })->paginate();
 
         return view('user.index', compact('users'))
             ->with('i', ($request->input('page', 1) - 1) * $users->perPage());
@@ -34,7 +34,7 @@ class UserController extends Controller
     public function create(): View
     {
         $user = new User();
-        $roles = Role::all();
+        $roles = Role::all(); // Trae todos los roles
 
         return view('user.create', compact('user', 'roles'));
     }
@@ -56,7 +56,6 @@ class UserController extends Controller
     public function show($id): View
     {
         $user = User::find($id);
-        $roles = Role::all();
 
         return view('user.show', compact('user'));
     }
@@ -67,7 +66,7 @@ class UserController extends Controller
     public function edit($id): View
     {
         $user = User::find($id);
-        $roles = Role::all();
+        $roles = Role::all(); // Trae todos los roles
 
         return view('user.edit', compact('user', 'roles'));
     }
@@ -95,7 +94,6 @@ class UserController extends Controller
         $user->password = bcrypt($request->password);
     }
 
-    $user->rol_id = $request->rol_id;
     $user->save();
 
     return redirect()->route('users.index')->with('success', 'Usuario actualizado');

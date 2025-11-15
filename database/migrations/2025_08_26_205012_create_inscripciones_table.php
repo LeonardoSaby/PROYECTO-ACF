@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inscripciones', function (Blueprint $table) {
-            $table->id();
+            $table->id('inscripcion_id');
             $table->unsignedBigInteger('infante_id');
             $table->unsignedBigInteger('curso_id');
             $table->unsignedBigInteger('turno_id');
@@ -20,9 +20,9 @@ return new class extends Migration
             $table->timestamps();
 
             // Claves foráneas
-            $table->foreign('infante_id')->references('id')->on('infantes')->onDelete('cascade');
-            $table->foreign('curso_id')->references('id')->on('cursos')->onDelete('cascade');
-            $table->foreign('turno_id')->references('id')->on('turnos')->onDelete('cascade');
+            $table->foreign('infante_id')->references('infante_id')->on('infantes')->onDelete('cascade');
+            $table->foreign('curso_id')->references('curso_id')->on('cursos')->onDelete('cascade');
+            $table->foreign('turno_id')->references('turno_id')->on('turnos')->onDelete('cascade');
         });
     }
 

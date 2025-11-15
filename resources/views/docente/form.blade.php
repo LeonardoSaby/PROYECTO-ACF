@@ -26,10 +26,34 @@
             <input type="text" name="correo_electronico_docente" class="form-control @error('correo_electronico_docente') is-invalid @enderror" value="{{ old('correo_electronico_docente', $docente?->correo_electronico_docente) }}" id="correo_electronico_docente" placeholder="Correo Electronico del docente">
             {!! $errors->first('correo_electronico_docente', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
-        <div class="form-group mb-2 mb20">
-            <label for="estado" class="form-label">{{ __('Estado') }}</label>
-            <input type="text" name="estado" class="form-control @error('estado') is-invalid @enderror" value="{{ old('estado', $docente?->estado) }}" id="estado" placeholder="Estado">
-            {!! $errors->first('estado', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+        {{-- PASSWORD --}}
+        <div class="form-group mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" 
+                   placeholder="Contraseña del usuario">
+            {!! $errors->first('password', '<div class="invalid-feedback"><strong>:message</strong></div>') !!}
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
+            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
+                   placeholder="Repetir contraseña">
+        </div>
+        
+        <div class="form-group">
+            <label for="curso_id">Curso</label>
+            <select name="curso_id" id="curso_id" class="form-control">
+                <option value="">-- Seleccione un curso --</option>
+                @foreach($cursos as $curso)
+                    <option value="{{ $curso->curso_id }}" 
+                        {{ old('curso_id', $docente->curso_id) == $curso->curso_id ? 'selected' : '' }}>
+                        {{ $curso->nombre_curso }}
+                    </option>
+                @endforeach
+            </select>
+            @error('curso_id')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
     </div>

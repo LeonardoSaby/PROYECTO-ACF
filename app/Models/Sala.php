@@ -27,6 +27,8 @@ class Sala extends Model
      *
      * @var array<int, string>
      */
+        protected $primaryKey = 'sala_id';
+
     protected $fillable = ['nombre_sala', 'capacidad_maxima', 'estado'];
 
 

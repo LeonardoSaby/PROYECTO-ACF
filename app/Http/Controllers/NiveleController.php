@@ -16,8 +16,7 @@ class NiveleController extends Controller
      */
     public function index(Request $request): View
     {
-        $niveles = Nivele::paginate();
-
+        $niveles = Nivele::where('estado', 'activo')->paginate();
         return view('nivele.index', compact('niveles'))
             ->with('i', ($request->input('page', 1) - 1) * $niveles->perPage());
     }
@@ -46,9 +45,9 @@ class NiveleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id): View
+    public function show($nivel_id): View
     {
-        $nivele = Nivele::find($id);
+        $nivele = Nivele::find($nivel_id);
 
         return view('nivele.show', compact('nivele'));
     }
@@ -56,9 +55,9 @@ class NiveleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id): View
+    public function edit($nivel_id): View
     {
-        $nivele = Nivele::find($id);
+        $nivele = Nivele::find($nivel_id);
 
         return view('nivele.edit', compact('nivele'));
     }
@@ -74,9 +73,9 @@ class NiveleController extends Controller
             ->with('success', 'Nivele updated successfully');
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy($nivel_id): RedirectResponse
     {
-        Nivele::find($id)->delete();
+        Nivele::find($nivel_id)->update(['estado' => 'inactivo']);
 
         return Redirect::route('niveles.index')
             ->with('success', 'Nivele deleted successfully');

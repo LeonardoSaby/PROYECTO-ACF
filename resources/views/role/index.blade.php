@@ -1,73 +1,100 @@
 @extends('adminlte::page')
 
-@section('template_title')
-    Roles
-@endsection
+@section('title', 'Gestión de Roles')
+
+@section('content_header')
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="mb-0">
+            <i class="fas fa-user-shield text-primary me-2"></i> Gestión de Roles
+        </h1>
+        <a href="{{ route('roles.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Crear Nuevo Rol
+        </a>
+    </div>
+@stop
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+<div class="card shadow">
+    <div class="card-header bg-light">
+        <h5 class="mb-0 text-primary">
+            <i class="fas fa-users-cog me-2"></i> Listado de Roles y Permisos Asignados
+        </h5>
+    </div>
 
-                            <span id="card_title">
-                                {{ __('Administrar Roles') }}
-                            </span>
-
-                             <div class="float-right">
-                                <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
-                                  {{ __('Registrar Rol') }}
-                                </a>
-                              </div>
-                        </div>
-                    </div>
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success m-4">
-                            <p>{{ $message }}</p>
-                        </div>
-                    @endif
-
-                    <div class="card-body bg-white">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead class="thead">
-                                    <tr>
-                                        <th>No</th>
-                                        
-									<th >Nombre</th>
-									<th >Descripcion</th>
-
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($roles as $role)
-                                        <tr>
-                                            <td>{{ ++$i }}</td>
-                                            
-										<td >{{ $role->nombre }}</td>
-										<td >{{ $role->description }}</td>
-
-                                            <td>
-                                                <form action="{{ route('roles.destroy', $role->id) }}" method="POST">
-                                                    <!--<a class="btn btn-sm btn-primary " href="{{ route('roles.show', $role->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>-->
-                                                    <a class="btn btn-sm btn-success" href="{{ route('roles.edit', $role->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Editar') }}</a>
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Eliminar') }}</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                {!! $roles->withQueryString()->links() !!}
+    <div class="card-body">
+        {{-- Mensaje de éxito --}}
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
             </div>
+        @endif
+
+        {{-- Tabla de roles --}}
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th width="5%">#</th>
+                    <th>Rol</th>
+                    <th width="60%">Permisos Asignados</th>
+                    <th width="20%" class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($roles as $rol)
+                    <tr>
+                        <td>{{ $loop->iteration + ($roles->currentPage() - 1) * $roles->perPage() }}</td>
+                        <td class="fw-semibold">
+                            <i class="fas fa-user-tag text-secondary me-1"></i> {{ ucfirst($rol->name) }}
+                        </td>
+                        <td>
+                            @if ($rol->permissions->count())
+                                <div class="row">
+                                    @foreach ($rol->permissions as $permiso)
+                                        <div class="col-md-4">
+                                            <div class="form-check">
+                                                <input type="checkbox" checked disabled class="form-check-input">
+                                                <label class="form-check-label text-muted">
+                                                    <i class="fas fa-key text-warning me-1"></i>
+                                                    {{ ucfirst($permiso->name) }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <span class="text-muted">—</span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ route('roles.show', $rol->id) }}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye"></i> Mostrar
+                            </a>
+                            <a href="{{ route('roles.edit', $rol->id) }}" class="btn btn-sm btn-success">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <form action="{{ route('roles.destroy', $rol->id) }}" method="POST" style="display:inline-block">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('¿Deseas eliminar este rol?')">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No hay roles registrados.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+
+        {{-- Paginación --}}
+        <div class="d-flex justify-content-end mt-3">
+            {{ $roles->links() }}
         </div>
     </div>
-@endsection
+</div>
+@stop

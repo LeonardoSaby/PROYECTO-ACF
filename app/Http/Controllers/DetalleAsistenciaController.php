@@ -2,63 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreDetalleAsistenciaRequest;
+use App\Models\DetalleAsistencia;
 use Illuminate\Http\Request;
 
 class DetalleAsistenciaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function update(StoreDetalleAsistenciaRequest $request, DetalleAsistencia $detalle)
     {
-        //
+        $detalle->update(['observacion' => $request->observacion]);
+        return redirect()->back()->with('success', 'Observación actualizada correctamente.');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // --- Actualiza varias observaciones de una sola vez ---
+    public function bulkUpdate(Request $request)
     {
-        //
-    }
+        $datos = $request->input('detalles', []); // array: detalle_asistencia_id => observacion
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        foreach ($datos as $detalle_asistencia_id => $observacion) {
+            DetalleAsistencia::where('detalle_asistencia_id', $detalle_asistencia_id)
+                ->update(['observacion' => $observacion]);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->back()->with('success', 'Observaciones actualizadas correctamente.');
     }
 }

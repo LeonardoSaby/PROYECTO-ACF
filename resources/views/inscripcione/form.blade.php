@@ -1,3 +1,14 @@
+{{-- Mensajes generales del controlador --}}
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
+
+
+
 <div class="row padding-1 p-1">
     <div class="col-md-12">
         
@@ -6,12 +17,14 @@
             <select name="infante_id" id="infante_id" class="form-control @error('infante_id') is-invalid @enderror">
                 <option value="">Seleccione un infante</option>
                 @foreach($infantes as $infante)
-                    <option value="{{ $infante->id }}" {{ old('infante_id', $inscripcione?->infante_id) == $infante->id ? 'selected' : '' }}>
+                    <option value="{{ $infante->infante_id }}" {{ old('infante_id', $inscripcione?->infante_id) == $infante->infante_id ? 'selected' : '' }}>
                         {{ $infante->nombre_infante .' '. $infante->apellido_infante }}
                     </option>
                 @endforeach
             </select>
-            {!! $errors->first('infante_id', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+            @error('infante_id')
+                <div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>
+            @enderror
         </div>
         
         <div class="form-group mb-2 mb20">
@@ -19,12 +32,14 @@
             <select name="curso_id" id="curso_id" class="form-control @error('curso_id') is-invalid @enderror">
                 <option value="">Seleccione un curso</option>
                 @foreach($cursos as $curso)
-                    <option value="{{ $curso->id }}" {{ old('curso_id', $inscripcione?->curso_id) == $curso->id ? 'selected' : '' }}>
+                    <option value="{{ $curso->curso_id }}" {{ old('curso_id', $inscripcione?->curso_id) == $curso->curso_id ? 'selected' : '' }}>
                         {{ $curso->nombre_curso }}
                     </option>
                 @endforeach
             </select>
-            {!! $errors->first('curso_id', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+            @error('curso_id')
+                <div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>
+            @enderror
         </div>
 
         <div class="form-group mb-2 mb20">
@@ -32,12 +47,14 @@
             <select name="turno_id" id="turno_id" class="form-control @error('turno_id') is-invalid @enderror">
                 <option value="">Seleccione un turno</option>
                 @foreach($turnos as $turno)
-                    <option value="{{ $turno->id }}" {{ old('turno_id', $inscripcione?->turno_id) == $turno->id ? 'selected' : '' }}>
+                    <option value="{{ $turno->turno_id }}" {{ old('turno_id', $inscripcione?->turno_id) == $turno->turno_id ? 'selected' : '' }}>
                         {{ $turno->nombre_turno }}
                     </option>
                 @endforeach
             </select>
-            {!! $errors->first('turno_id', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+            @error('turno_id')
+                <div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>
+            @enderror
         </div>
         
     </div>

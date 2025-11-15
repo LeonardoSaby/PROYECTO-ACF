@@ -32,10 +32,7 @@
                                     <strong>Password:</strong>
                                     {{ $user->password }}
                                 </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Rol:</strong>
-                                    {{ $user->rol_id }}
-                                </div>
+
 
                     </div>
                 </div>

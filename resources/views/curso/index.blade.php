@@ -5,78 +5,75 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-lg rounded-3">
+                <div class="card-header bg-gradient-info text-white d-flex justify-content-between align-items-center flex-wrap">
+                    <h3 class="card-title mb-0"><i class="fas fa-book"></i> Administrar Cursos</h3>
 
-                            <span id="card_title">
-                                {{ __('Administrar Cursos') }}
-                            </span>
-
-                             <div class="float-right">
-                                <a href="{{ route('cursos.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
-                                  {{ __('Registrar Curso') }}
-                                </a>
-                              </div>
-                        </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ route('cursos.create') }}" class="btn btn-sm btn-success">
+                            <i class="fas fa-plus"></i> Registrar Curso
+                        </a>
                     </div>
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success m-4">
-                            <p>{{ $message }}</p>
-                        </div>
-                    @endif
+                </div>
 
-                    <div class="card-body bg-white">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead class="thead">
+                @if ($message = Session::get('success'))
+                    <div class="alert alert-success m-4">
+                        <p>{{ $message }}</p>
+                    </div>
+                @endif
+
+                <div class="card-body bg-white">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered align-middle text-center">
+                            <thead class="table-info">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nombre</th>
+                                    <th>Sala</th>
+                                    <th>Edad Mínima</th>
+                                    <th>Edad Máxima</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($cursos as $curso)
                                     <tr>
-                                        <th>No</th>
-                                        
-									<th >Nombre</th>
-                                    <th >Edad minima</th>
-                                    <th >Edad maxima</th>
-									<th >Sala</th>
-									<th >Docente</th>
-									<th >Estado</th>
-
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($cursos as $curso)
-                                        <tr>
-                                            <td>{{ ++$i }}</td>
-                                            
-                                            
+                                        <td>{{ ++$i }}</td>
                                         <td>{{ $curso->nombre_curso }}</td>
-                                        <td>{{ $curso->nivele->edad_minima .' años'}}</td>
-                                        <td>{{ $curso->nivele->edad_maxima .' años'}}</td>
+                                        <td>{{ $curso->sala->nombre_sala }}</td>
+                                        <td>{{ $curso->nivel?->edad_minima }} años</td>
+                                        <td>{{ $curso->nivel?->edad_maxima }} años</td>
 
-										<td >{{ $curso->sala->nombre_sala }}</td>
-										<td >{{ $curso->docente->nombre_docente .' '. $curso->docente->apellido_infante}}</td>
-										<td >{{ $curso->estado }}</td>
-
-                                            <td>
-                                                <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST">
-                                                    <!--<a class="btn btn-sm btn-primary " href="{{ route('cursos.show', $curso->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>-->
-                                                    <a class="btn btn-sm btn-success" href="{{ route('cursos.edit', $curso->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Editar') }}</a>
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-1 flex-wrap">
+                                                <a class="btn btn-sm btn-success" href="{{ route('cursos.edit', $curso->curso_id) }}">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <form action="{{ route('cursos.destroy', $curso->curso_id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Eliminar') }}</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger"
+                                                        onclick="event.preventDefault(); confirm('¿Desea eliminar este curso?') ? this.closest('form').submit() : false;">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
                                                 </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
+                </div>
+
+                <div class="card-footer clearfix">
+                    {!! $cursos->withQueryString()->links() !!}
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection

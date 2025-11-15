@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AsistenciaRequest extends FormRequest
+class StoreAsistenciaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,14 @@ class AsistenciaRequest extends FormRequest
     public function rules(): array
     {
         return [
-			'fecha' => 'required',
-			'estado' => 'required',
+            'fecha' => 'required|date',
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'fecha.required' => 'La fecha es obligatoria.',
+            'fecha.date' => 'La fecha no es válida.',
         ];
     }
 }

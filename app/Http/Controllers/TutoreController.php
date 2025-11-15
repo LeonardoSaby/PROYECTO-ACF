@@ -3,87 +3,113 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tutore;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Infante;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\TutoreRequest;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
 
 class TutoreController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Listado de tutores con búsqueda.
      */
     public function index(Request $request): View
     {
         $search = $request->input('search');
-        $tutores = Tutore::when($search, function ($query, $search) {
-            return $query->where('nombre_tutor', 'like', "%{$search}%")
-                         ->orWhere('apellido_tutor', 'like', "%{$search}%")
-                         ->orWhere('CI_tutor', 'like', "%{$search}%");
-        })->paginate(10);
+
+        $tutores = Tutore::where('estado', 'activo')
+            ->when($search, function ($query, $search) {
+                $query->where('nombre_tutor', 'like', "%{$search}%")
+                      ->orWhere('apellido_tutor', 'like', "%{$search}%");
+            })
+            ->paginate(1000);
 
         return view('tutore.index', compact('tutores'))
-            ->with('i', ($request->input('page', 1) - 1) * $tutores->perPage());
+            ->with('i', (request()->input('page', 1) - 1) * $tutores->perPage());
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostrar formulario de creación.
      */
     public function create(): View
     {
         $tutore = new Tutore();
-
         return view('tutore.create', compact('tutore'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardar tutor y crear usuario asociado.
      */
-    public function store(TutoreRequest $request): RedirectResponse
+    public function store(TutoreRequest $request)
     {
-        Tutore::create($request->validated());
+        // Crear usuario vinculado
+        $user = User::create([
+            'name' => $request->nombre_tutor . ' ' . $request->apellido_tutor,
+            'email' => $request->correo_electronico_tutor,
+            'password' => Hash::make($request->password),
+        ]);
 
-        return Redirect::route('tutores.index')
-            ->with('success', 'Tutore created successfully.');
+        // Crear tutor asociado al usuario
+        Tutore::create([
+            'nombre_tutor' => $request->nombre_tutor,
+            'apellido_tutor' => $request->apellido_tutor,
+            'CI_tutor' => $request->CI_tutor,
+            'telefono_tutor' => $request->telefono_tutor,
+            'correo_electronico_tutor' => $request->correo_electronico_tutor,
+            'direccion_tutor' => $request->direccion_tutor,
+            'user_id' => $user->id,
+            'estado' => 'activo',
+        ]);
+
+        // (Opcional) Asignar rol
+        if (method_exists($user, 'assignRole')) {
+            $user->assignRole('tutor');
+        }
+
+        return redirect()->route('tutores.index')->with('success', 'Tutor registrado correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id): View
-    {
-        $tutore = Tutore::find($id);
 
+
+    /**
+     * Mostrar un tutor con sus datos.
+     */
+    public function show($tutor_id): View
+    {
+        $tutore = Tutore::findOrFail($tutor_id);
         return view('tutore.show', compact('tutore'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Mostrar formulario de edición.
      */
-    public function edit($id): View
+    public function edit($tutor_id): View
     {
-        $tutore = Tutore::find($id);
-
+        $tutore = Tutore::with('infantes')->findOrFail($tutor_id);
         return view('tutore.edit', compact('tutore'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar tutor.
      */
     public function update(TutoreRequest $request, Tutore $tutore): RedirectResponse
     {
         $tutore->update($request->validated());
-
-        return Redirect::route('tutores.index')
-            ->with('success', 'Tutore updated successfully');
+        return redirect()->route('tutores.index')->with('success', 'Tutor actualizado correctamente.');
     }
 
-    public function destroy($id): RedirectResponse
+    /**
+     * Desactivar tutor (soft delete).
+     */
+    public function destroy($tutor_id): RedirectResponse
     {
-        Tutore::find($id)->delete();
+        $tutore = Tutore::findOrFail($tutor_id);
+        $tutore->update(['estado' => 'inactivo']);
 
-        return Redirect::route('tutores.index')
-            ->with('success', 'Tutore deleted successfully');
+        return redirect()->route('tutores.index')->with('success', 'Tutor eliminado correctamente.');
     }
 }

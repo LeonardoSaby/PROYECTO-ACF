@@ -5,83 +5,89 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-lg rounded-3">
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center flex-wrap">
+                    <h3 class="card-title mb-0"><i class="fas fa-baby"></i> Administrar Infantes</h3>
 
-                            <span id="card_title">
-                                {{ __('Administrar Infante') }}
-                            </span>
-
-                            <!-- Buscador -->
-                        <form action="{{ route('infantes.index') }}" method="GET" class="form-inline">
-                            <input type="text" name="search" class="form-control form-control-sm mr-2"
+                    <div class="d-flex gap-2 flex-wrap">
+                        <!-- Buscador -->
+                        <form action="{{ route('infantes.index') }}" method="GET" class="d-flex">
+                            <input type="text" name="search" class="form-control form-control-sm me-2"
                                 placeholder="Buscar infante..." value="{{ request('search') }}">
-                            <button type="submit" class="btn btn-sm btn-secondary">Buscar</button>
+                            <button type="submit" class="btn btn-sm btn-light"><i class="fas fa-search"></i></button>
                         </form>
 
-                             <div class="float-right">
-                                <a href="{{ route('infantes.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
-                                  {{ __('Registrar infantes') }}
-                                </a>
-                              </div>
-                        </div>
+                        <a href="{{ route('infantes.create') }}" class="btn btn-sm btn-success">
+                            <i class="fas fa-plus"></i> Registrar Infante
+                        </a>
                     </div>
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success m-4">
-                            <p>{{ $message }}</p>
-                        </div>
-                    @endif
+                </div>
 
-                    <div class="card-body bg-white">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead class="thead">
+                @if ($message = Session::get('success'))
+                    <div class="alert alert-success m-4">
+                        <p>{{ $message }}</p>
+                    </div>
+                @endif
+
+                <div class="card-body bg-white">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered align-middle text-center">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>CI</th>
+                                    <th>Fecha Nacimiento</th>
+                                    <th>Género</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($infantes as $infante)
                                     <tr>
-                                        <th>No</th>
+                                        <td>{{ ++$i }}</td>
+                                        <td>{{ $infante->nombre_infante }}</td>
+                                        <td>{{ $infante->apellido_infante }}</td>
+                                        <td>{{ $infante->CI_infante }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($infante->fecha_nacimiento_infante)->format('d M Y') }}</td>
+                                        <td>{{ $infante->genero_infante }}</td>
                                         
-									<th >Nombre</th>
-									<th >Apellido</th>
-									<th >CI</th>
-									<th >Fecha Nacimiento</th>
-									<th >Genero</th>
-									<th >Estado</th>
-
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($infantes as $infante)
-                                        <tr>
-                                            <td>{{ ++$i }}</td>
-                                            
-										<td >{{ $infante->nombre_infante }}</td>
-										<td >{{ $infante->apellido_infante }}</td>
-										<td >{{ $infante->CI_infante }}</td>
-										<td >{{ $infante->fecha_nacimiento_infante }}</td>
-										<td >{{ $infante->genero_infante }}</td>
-										<td >{{ $infante->estado }}</td>
-
-                                            <td>
-                                                <form action="{{ route('infantes.destroy', $infante->id) }}" method="POST">
-                                                    <!--<a class="btn btn-sm btn-primary " href="{{ route('infantes.show', $infante->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>-->
-                                                    <a class="btn btn-sm btn-success" href="{{ route('infantes.edit', $infante->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Ecitar') }}</a>
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-1 flex-wrap">
+                                                <!-- Ver -->
+                                                <a class="btn btn-sm btn-info" href="{{ route('infantes.show', $infante->infante_id) }}">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                                
+                                                <a class="btn btn-sm btn-success" href="{{ route('infantes.edit', $infante->infante_id) }}">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <form action="{{ route('infantes.destroy', $infante->infante_id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Eliminar') }}</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger"
+                                                        onclick="event.preventDefault(); confirm('¿Desea eliminar este infante?') ? this.closest('form').submit() : false;">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
                                                 </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
+                </div>
+
+                <div class="card-footer clearfix">
+                    {!! $infantes->withQueryString()->links() !!}
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection

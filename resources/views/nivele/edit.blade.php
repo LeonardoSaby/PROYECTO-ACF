@@ -14,7 +14,7 @@
                         <span class="card-title">{{ __('Editar') }} Nivel</span>
                     </div>
                     <div class="card-body bg-white">
-                        <form method="POST" action="{{ route('niveles.update', $nivele->id) }}"  role="form" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('niveles.update', $nivele->nivel_id) }}"  role="form" enctype="multipart/form-data">
                             {{ method_field('PATCH') }}
                             @csrf
 

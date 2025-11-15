@@ -16,8 +16,7 @@ class TurnoController extends Controller
      */
     public function index(Request $request): View
     {
-        $turnos = Turno::paginate();
-
+        $turnos = Turno::where('estado', 'activo')->paginate();
         return view('turno.index', compact('turnos'))
             ->with('i', ($request->input('page', 1) - 1) * $turnos->perPage());
     }
@@ -46,9 +45,9 @@ class TurnoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id): View
+    public function show($turno_id): View
     {
-        $turno = Turno::find($id);
+        $turno = Turno::find($turno_id);
 
         return view('turno.show', compact('turno'));
     }
@@ -56,9 +55,9 @@ class TurnoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id): View
+    public function edit($turno_id): View
     {
-        $turno = Turno::find($id);
+        $turno = Turno::find($turno_id);
 
         return view('turno.edit', compact('turno'));
     }
@@ -74,9 +73,9 @@ class TurnoController extends Controller
             ->with('success', 'Turno updated successfully');
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy($turno_id): RedirectResponse
     {
-        Turno::find($id)->delete();
+        Turno::find($turno_id)->update(['estado' => 'inactivo']);
 
         return Redirect::route('turnos.index')
             ->with('success', 'Turno deleted successfully');

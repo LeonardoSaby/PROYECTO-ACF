@@ -73,23 +73,26 @@ new #[Layout('components.layouts.auth')] class extends Component {
     }
 }; ?>
 
-<div class="min-h-screen flex items-center justify-center p-4 sm:p-6 
-            bg-[url('fondo.jpg')] 
-            bg-cover bg-center bg-fixed relative">
 
-    <div class="absolute inset-0 bg-black opacity-60"></div>
+<div class="min-h-screen flex items-center justify-center bg-[#011126] relative">
 
-    <div class="w-full max-w-sm z-10"> <div class="text-center mb-10 relative">
-            <h2 class="text-4xl font-extrabold text-white tracking-tight">
-                Acceso al Sistema
-            </h2>
-            <p class="mt-3 text-sm text-gray-300">
-Hola            </p>
+    {{-- Overlay --}}
+    <div class="absolute inset-0 bg-[#034C8C]/80"></div>
+
+    {{-- Caja del formulario --}}
+    <div class="relative z-10 w-full max-w-md p-8 rounded-xl shadow-2xl" style="background: linear-gradient(145deg, #034C8C, #023059);">
+
+        {{-- Título --}}
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[#6CAFD9]">Guardería Los Pequeños</h1>
+            <p class="text-[#84B8D9] mt-2 text-sm">Acceso al sistema de administración</p>
         </div>
 
-        <x-auth-session-status class="text-center mb-6 text-cyan-400 relative" :status="session('status')" />
+        {{-- Estado de sesión --}}
+        <x-auth-session-status class="mb-4 text-[#6CAFD9]" :status="session('status')" />
 
-        <form wire:submit="login" class="bg-gray-800/90 p-8 sm:p-10 rounded-xl shadow-2xl space-y-6 border border-gray-700 backdrop-blur-sm relative">
+        {{-- Formulario --}}
+        <form wire:submit="login" class="space-y-6">
 
             <flux:input
                 wire:model="email"
@@ -97,42 +100,31 @@ Hola            </p>
                 type="email"
                 required
                 autofocus
-                autocomplete="email"
                 placeholder="correo@ejemplo.com"
-                class="w-full text-white bg-gray-700 border-gray-600 focus:border-cyan-500 focus:ring-cyan-500"
+                class="w-full text-white bg-[#023059]/80 border-[#6CAFD9] focus:border-[#84B8D9] focus:ring-[#84B8D9]"
             />
 
-            <div class="relative">
-                <flux:input
-                    wire:model="password"
-                    label="Contraseña"
-                    type="password"
-                    required
-                    autocomplete="current-password"
-                    placeholder="Contraseña"
-                    viewable
-                    class="w-full text-white bg-gray-700 border-gray-600 focus:border-cyan-500 focus:ring-cyan-500"
-                />
-            </div>
+            <flux:input
+                wire:model="password"
+                label="Contraseña"
+                type="password"
+                required
+                placeholder="Contraseña"
+                viewable
+                class="w-full text-white bg-[#023059]/80 border-[#6CAFD9] focus:border-[#84B8D9] focus:ring-[#84B8D9]"
+            />
 
-            <div class="flex items-center justify-between pt-2">
-                <flux:checkbox wire:model="remember" label="Recuérdame" class="text-cyan-500" />
-
-                @if (Route::has('register'))
-                    <a
-                        href="{{ route('register') }}"
-                        class="text-sm font-medium text-cyan-400 hover:text-cyan-300 hover:underline transition duration-200"
-                    >
-                        Regístrate aquí
-                    </a>
+            <div class="flex items-center justify-between">
+                <flux:checkbox wire:model="remember" label="Recuérdame" class="text-[#84B8D9]" />
+                @if(Route::has('register'))
+                    <a href="{{ route('register') }}" class="text-[#6CAFD9] hover:text-[#84B8D9] text-sm">Regístrate aquí</a>
                 @endif
             </div>
 
-            <div class="pt-6">
-                <flux:button variant="primary" type="submit" class="w-full justify-center py-3 text-lg font-bold bg-cyan-600 hover:bg-cyan-700 focus:ring-cyan-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-150">
-                    Ingresar
-                </flux:button>
-            </div>
+            <flux:button type="submit" class="w-full py-3 font-bold text-lg bg-[#6CAFD9] hover:bg-[#84B8D9] transition duration-200">
+                Ingresar
+            </flux:button>
+
         </form>
     </div>
 </div>
