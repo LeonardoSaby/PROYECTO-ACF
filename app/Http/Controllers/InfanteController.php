@@ -78,28 +78,28 @@ class InfanteController extends Controller
         return view('infante.edit', compact('infante', 'tutores'));
     }
 
-    public function update(InfanteRequest $request, $id): RedirectResponse
-    {
-        $infante = Infante::findOrFail($id);
-        $infante->update($request->validated());
+   public function update(InfanteRequest $request, $id): RedirectResponse
+{
+    $infante = Infante::findOrFail($id);
+    $infante->update($request->validated());
 
-        // Mantener tutores asignados
+    // Solo sincronizar si se envían tutores
+    if ($request->tutores && $request->parentezcos) {
         $syncData = [];
-        if ($request->tutores && $request->parentezcos) {
-            foreach ($request->tutores as $i => $tutorId) {
-                if ($tutorId) {
-                    $syncData[$tutorId] = [
-                        'parentesco' => $request->parentezcos[$i],
-                        'estado' => 'activo'
-                    ];
-                }
+        foreach ($request->tutores as $i => $tutorId) {
+            if ($tutorId) {
+                $syncData[$tutorId] = [
+                    'parentesco' => $request->parentezcos[$i],
+                    'estado' => 'activo'
+                ];
             }
-        }
-
+        }   
         $infante->tutores()->sync($syncData);
-
-        return redirect()->route('infantes.index')->with('success', 'Infante actualizado exitosamente.');
     }
+
+    return redirect()->route('infantes.index')->with('success', 'Infante actualizado exitosamente.');
+}
+
 
 
     public function destroy($infante_id): RedirectResponse

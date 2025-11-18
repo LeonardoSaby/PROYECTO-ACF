@@ -81,8 +81,11 @@ Route::group(['middleware' => ['auth', 'permission:access.inscripciones']], func
 // ASISTENCIAS
 // ==========================
 Route::group(['middleware' => ['auth', 'permission:access.asistencias']], function() {
-    Route::resource('asistencias', AsistenciaController::class);
-    Route::get('asistencias/generar', [AsistenciaController::class, 'generarAsistencia'])->name('asistencias.generarAsistencia');
+    Route::get('asistencias/generar', [AsistenciaController::class, 'generarAsistencia'])
+    ->name('asistencias.generarAsistencia');
+
+Route::resource('asistencias', AsistenciaController::class);
+
 });
 Route::group(['middleware' => ['auth', 'permission:access.detalle_asistencias']], function() {
     Route::resource('detalle-asistencias', DetalleAsistenciaController::class);
@@ -96,9 +99,10 @@ Route::group(['middleware' => ['auth', 'permission:access.reportes.lista_general
     Route::get('reportes/inscritos/pdf', [ReporteController::class, 'listaGeneralPDF'])->name('reportes.lista_general_pdf');
 });
 Route::group(['middleware' => ['auth', 'permission:access.reportes.lista_filtrada']], function() {
+    Route::get('reportes/inscritos/filtrar', [ReporteController::class, 'formFiltrar'])->name('reportes.form_filtrar');
     Route::get('reportes/inscritos/por-curso', [ReporteController::class, 'listaFiltradaPDF'])->name('reportes.lista_filtrada_pdf');
 });
-Route::group(['middleware' => ['auth', 'permission:access.reportes.asistencia']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.reportes.asistencias']], function() {
     Route::get('reportes/asistencia/{asistencia}', [ReporteController::class, 'listaAsistenciaPDF'])->name('reportes.asistencia_pdf');
     Route::get('reportes/asistencias', [ReporteController::class, 'vistaAsistencias'])->name('reportes.asistencias');
 });

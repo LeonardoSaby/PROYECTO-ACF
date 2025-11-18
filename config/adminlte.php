@@ -321,7 +321,7 @@ return [
         ],
         [
             'text' => 'Lista filtrada por curso y turno',
-            'url' => 'reportes/inscritos/filtrar', 
+            'route' => 'reportes.form_filtrar',
             'icon' => 'fas fa-filter',
         ],
         [
