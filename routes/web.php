@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
@@ -17,9 +16,7 @@ use App\Http\Controllers\DetalleAsistenciaController;
 use App\Http\Controllers\ReporteController; 
 use Livewire\Volt\Volt;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('');
+Route::get('/', fn() => view('welcome'))->name('');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -27,7 +24,6 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
-
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
@@ -41,159 +37,75 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // ADMINISTRACIÓN (solo Admin)
 // ==========================
 
-// Route::group(['middleware' => ['auth', 'permission:access.users']], function() {
-//     Route::resource('users', UserController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.users']], function() {
     Route::resource('users', UserController::class);
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.roles']], function() {
-//     Route::resource('roles', RoleController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.roles']], function() {
     Route::resource('roles', RoleController::class);
 });
 
 // Parametrización completa (solo Admin)
-
-// Route::group(['middleware' => ['auth', 'permission:access.infantes']], function() {
-//     Route::resource('infantes', InfanteController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.infantes']], function() {
     Route::resource('infantes', InfanteController::class);
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.tutores']], function() {
-//     Route::resource('tutores', TutoreController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.tutores']], function() {
     Route::resource('tutores', TutoreController::class);
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.turnos']], function() {
-//     Route::resource('turnos', TurnoController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.turnos']], function() {
     Route::resource('turnos', TurnoController::class);
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.niveles']], function() {
-//     Route::resource('niveles', NiveleController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.niveles']], function() {
     Route::resource('niveles', NiveleController::class);
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.salas']], function() {
-//     Route::resource('salas', SalaController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.salas']], function() {
     Route::resource('salas', SalaController::class);
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.cursos']], function() {
-//     Route::resource('cursos', CursoController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.cursos']], function() {
     Route::resource('cursos', CursoController::class);
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.docentes']], function() {
-//     Route::resource('docentes', DocenteController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.docentes']], function() {
     Route::resource('docentes', DocenteController::class);
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.infantes_tutores']], function() {
-//     Route::resource('infantes-tutores', InfantesTutoreController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.infantes_tutores']], function() {
     Route::resource('infantes-tutores', InfantesTutoreController::class);
 });
 
 // ==========================
 // INSCRIPCIONES
 // ==========================
-
-// Route::group(['middleware' => ['auth', 'permission:access.inscripciones']], function() {
-//     Route::resource('inscripciones', InscripcioneController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.inscripciones']], function() {
     Route::resource('inscripciones', InscripcioneController::class);
 });
 
 // ==========================
 // ASISTENCIAS
 // ==========================
-
-// Route::group(['middleware' => ['auth', 'permission:access.asistencias']], function() {
-//     Route::resource('asistencias', AsistenciaController::class);
-//     Route::get('asistencias/generar', [AsistenciaController::class, 'generarAsistencia'])
-//         ->name('asistencias.generarAsistencia');
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.asistencias']], function() {
     Route::resource('asistencias', AsistenciaController::class);
-    Route::get('asistencias/generar', [AsistenciaController::class, 'generarAsistencia'])
-        ->name('asistencias.generarAsistencia');
+    Route::get('asistencias/generar', [AsistenciaController::class, 'generarAsistencia'])->name('asistencias.generarAsistencia');
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.detalle_asistencias']], function() {
-//     Route::resource('detalle-asistencias', DetalleAsistenciaController::class);
-// });
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission:access.detalle_asistencias']], function() {
     Route::resource('detalle-asistencias', DetalleAsistenciaController::class);
 });
 
 // ==========================
 // REPORTES
 // ==========================
-
-// Route::group(['middleware' => ['auth', 'permission:access.reportes.lista_general']], function() {
-//     Route::get('reportes/inscritos', [ReporteController::class, 'vistaListaGeneral'])
-//         ->name('reportes.lista_general');
-//     Route::get('reportes/inscritos/pdf', [ReporteController::class, 'listaGeneralPDF'])
-//         ->name('reportes.lista_general_pdf');
-// });
-Route::group(['middleware' => ['auth']], function() {
-    Route::get('reportes/inscritos', [ReporteController::class, 'vistaListaGeneral'])
-        ->name('reportes.lista_general');
-    Route::get('reportes/inscritos/pdf', [ReporteController::class, 'listaGeneralPDF'])
-        ->name('reportes.lista_general_pdf');
+Route::group(['middleware' => ['auth', 'permission:access.reportes.lista_general']], function() {
+    Route::get('reportes/inscritos', [ReporteController::class, 'vistaListaGeneral'])->name('reportes.lista_general');
+    Route::get('reportes/inscritos/pdf', [ReporteController::class, 'listaGeneralPDF'])->name('reportes.lista_general_pdf');
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.reportes.lista_filtrada']], function() {
-//     Route::get('reportes/inscritos/por-curso', [ReporteController::class, 'listaFiltradaPDF'])
-//         ->name('reportes.lista_filtrada_pdf');
-// });
-Route::group(['middleware' => ['auth']], function() {
-    Route::get('reportes/inscritos/por-curso', [ReporteController::class, 'listaFiltradaPDF'])
-        ->name('reportes.lista_filtrada_pdf');
+Route::group(['middleware' => ['auth', 'permission:access.reportes.lista_filtrada']], function() {
+    Route::get('reportes/inscritos/por-curso', [ReporteController::class, 'listaFiltradaPDF'])->name('reportes.lista_filtrada_pdf');
 });
-
-// Route::group(['middleware' => ['auth', 'permission:access.reportes.asistencia']], function() {
-//     Route::get('reportes/asistencia/{asistencia}', [ReporteController::class, 'listaAsistenciaPDF'])
-//         ->name('reportes.asistencia_pdf');
-//     Route::get('reportes/asistencias', [ReporteController::class, 'vistaAsistencias'])
-//         ->name('reportes.asistencias');
-// });
-Route::group(['middleware' => ['auth']], function() {
-    Route::get('reportes/asistencia/{asistencia}', [ReporteController::class, 'listaAsistenciaPDF'])
-        ->name('reportes.asistencia_pdf');
-    Route::get('reportes/asistencias', [ReporteController::class, 'vistaAsistencias'])
-        ->name('reportes.asistencias');
+Route::group(['middleware' => ['auth', 'permission:access.reportes.asistencia']], function() {
+    Route::get('reportes/asistencia/{asistencia}', [ReporteController::class, 'listaAsistenciaPDF'])->name('reportes.asistencia_pdf');
+    Route::get('reportes/asistencias', [ReporteController::class, 'vistaAsistencias'])->name('reportes.asistencias');
 });
 
 // ==========================
 // VISTA TUTOR (solo Tutor)
 // ==========================
-
-// Route::group(['middleware' => ['auth', 'permission:access.tutor_view']], function() {
-//     // Aquí pondrás la ruta de la vista del tutor
-//     // Route::get('tutor', [TutorController::class, 'vista'])->name('tutor.vista');
-// });
-Route::group(['middleware' => ['auth']], function() {
-    // Aquí pondrás la ruta de la vista del tutor sin permisos
+Route::group(['middleware' => ['auth', 'permission:access.tutor_view']], function() {
     // Route::get('tutor', [TutorController::class, 'vista'])->name('tutor.vista');
 });

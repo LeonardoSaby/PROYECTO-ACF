@@ -13,28 +13,42 @@ class RoleSeeder extends Seeder
         $guard = 'web';
 
         // -----------------------------------
-        // PERMISOS (agrupados por área)
+        // PERMISOS según menú
         // -----------------------------------
         $permissions = [
-            'usuarios' => ['users.manage', 'roles.manage'],
-            'parametros' => [
-                'infantes.manage', 'tutores.manage', 'turnos.manage', 
-                'niveles.manage', 'salas.manage', 'docentes.manage', 
-                'cursos.manage', 'infantes_tutores.manage', 'inscripciones.manage',
-                'detalle_asistencias.manage'
+            'acceso_y_seguridad' => [
+                'access.users', 
+                'access.roles'
             ],
-            'asistencias' => ['asistencias.manage', 'asistencias.generar'],
+            'parametrizacion' => [
+                'access.tutores', 
+                'access.infantes', 
+                'access.salas', 
+                'access.niveles',
+                'access.cursos',
+                'access.docentes',
+                'access.turnos'
+            ],
+            'transacciones' => [
+                'access.inscripciones',
+                'access.asistencias',
+                'access.asistencias.generar'
+            ],
             'reportes' => [
-                'reportes.lista_general', 'reportes.lista_filtrada', 
-                'reportes.asistencia', 'reportes.asistencias'
+                'access.reportes.lista_general',
+                'access.reportes.lista_filtrada',
+                'access.reportes.asistencias'
             ],
-            'tutor' => ['tutor.view'],
+            'tutor' => ['access.tutor_view'],
         ];
 
         // Crear permisos
-        foreach($permissions as $group){
-            foreach($group as $perm){
-                Permission::firstOrCreate(['name' => $perm, 'guard_name' => $guard]);
+        foreach ($permissions as $group) {
+            foreach ($group as $perm) {
+                Permission::firstOrCreate([
+                    'name' => $perm,
+                    'guard_name' => $guard
+                ]);
             }
         }
 
@@ -44,17 +58,20 @@ class RoleSeeder extends Seeder
         $rolesPermissions = [
             'Administrador' => Permission::all()->pluck('name')->toArray(),
             'Docente' => [
-                'inscripciones.manage', 
-                'asistencias.manage',
-                'asistencias.generar',
-                'reportes.lista_filtrada',
-                'reportes.asistencia',
+                'access.inscripciones',
+                'access.asistencias',
+                'access.asistencias.generar',
+                'access.reportes.lista_filtrada',
+                'access.reportes.asistencias',
             ],
-            'Tutor' => ['tutor.view'],
+            'Tutor' => ['access.tutor_view'],
         ];
 
-        foreach($rolesPermissions as $roleName => $perms){
-            $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => $guard]);
+        foreach ($rolesPermissions as $roleName => $perms) {
+            $role = Role::firstOrCreate([
+                'name' => $roleName,
+                'guard_name' => $guard
+            ]);
             $role->syncPermissions($perms);
         }
     }
