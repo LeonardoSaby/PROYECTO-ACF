@@ -36,11 +36,12 @@ class Tutore extends Model
     protected $fillable = ['nombre_tutor', 'apellido_tutor', 'CI_tutor', 'telefono_tutor', 'correo_electronico_tutor', 'direccion_tutor', 'user_id', 'estado'];
 
     public function infantes()
-    {
-        return $this->belongsToMany(Infante::class, 'infantes_tutores', 'tutor_id', 'infante_id')
-                    ->withPivot('parentesco', 'estado')
-                    ->withTimestamps();
-    }
+{
+    return $this->belongsToMany(Infante::class, 'infantes_tutores', 'tutor_id', 'infante_id')
+                ->withPivot('parentesco')
+                ->wherePivot('estado', 'activo');
+}
+
 
 
     public function user()

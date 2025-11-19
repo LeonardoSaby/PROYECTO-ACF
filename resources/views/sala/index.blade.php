@@ -9,7 +9,8 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card shadow-lg rounded-3">
-                <div class="card-header bg-gradient-info text-white d-flex justify-content-between align-items-center flex-wrap">
+                {{-- Se cambió bg-gradient-info por bg-gradient-primary --}}
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center flex-wrap">
                     <h3 class="card-title mb-0"><i class="fas fa-chalkboard"></i> Administrar Salas</h3>
 
                     <div class="d-flex gap-2 flex-wrap">
@@ -28,7 +29,8 @@
                 <div class="card-body bg-white">
                     <div class="table-responsive">
                         <table class="table table-striped table-hover table-bordered align-middle text-center">
-                            <thead class="table-info">
+                            {{-- Se cambió table-info por table-primary --}}
+                            <thead class="table-primary">
                                 <tr>
                                     <th>No</th>
                                     <th>Nombre de Sala</th>

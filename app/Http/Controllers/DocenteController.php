@@ -47,34 +47,30 @@ class DocenteController extends Controller
      */
     public function store(DocenteRequest $request)
 {
-    // Crear usuario vinculado al docente
     $user = User::create([
         'name' => $request->nombre_docente . ' ' . $request->apellido_docente,
         'email' => $request->correo_electronico_docente,
         'password' => Hash::make($request->password),
     ]);
 
-    // Crear registro en la tabla docentes
     Docente::create([
         'nombre_docente' => $request->nombre_docente,
         'apellido_docente' => $request->apellido_docente,
         'CI_docente' => $request->CI_docente,
-        'telefono_docente' => $request->telefono_docente,
+        'telefono_docente' => $request->telefono_docente ?? '',
         'correo_electronico_docente' => $request->correo_electronico_docente,
-        'fecha_contratacion' => $request->fecha_contratacion,
+        'fecha_contratacion' => $request->fecha_contratacion ?? now(),
         'curso_id' => $request->curso_id,
         'user_id' => $user->id,
         'estado' => 'activo',
     ]);
 
-    // Asignar rol (si usas Spatie)
     if (method_exists($user, 'assignRole')) {
         $user->assignRole('Docente');
     }
 
     return redirect()->route('docentes.index')->with('success', 'Docente registrado correctamente.');
 }
-
 
     /**
      * Muestra la información de un docente específico.
@@ -97,15 +93,19 @@ class DocenteController extends Controller
     /**
      * Actualiza los datos de un docente existente.
      */
-    public function update(DocenteRequest $request, Docente $docente): RedirectResponse
-    {
-        $data = $request->validated();
-        $data['telefono_docente'] = $data['telefono_docente'] ?? '';
+    // UPDATE
+public function update(DocenteRequest $request, Docente $docente): RedirectResponse
+{
+    $data = $request->validated();
+    $data['telefono_docente'] = $data['telefono_docente'] ?? '';
 
-        $docente->update($data);
+    // No modificamos la fecha de contratación
+    unset($data['fecha_contratacion']);
 
-        return Redirect::route('docentes.index')->with('success', 'Docente modificado exitosamente.');
-    }
+    $docente->update($data);
+
+    return Redirect::route('docentes.index')->with('success', 'Docente modificado exitosamente.');
+}
 
     /**
      * Marca un docente como inactivo (eliminación lógica).

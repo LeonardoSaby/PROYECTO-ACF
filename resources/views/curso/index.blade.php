@@ -9,7 +9,8 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card shadow-lg rounded-3">
-                <div class="card-header bg-gradient-info text-white d-flex justify-content-between align-items-center flex-wrap">
+                {{-- Cambio de color aquí: bg-gradient-primary --}}
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center flex-wrap">
                     <h3 class="card-title mb-0"><i class="fas fa-book"></i> Administrar Cursos</h3>
 
                     <div class="d-flex gap-2 flex-wrap">
@@ -28,7 +29,8 @@
                 <div class="card-body bg-white">
                     <div class="table-responsive">
                         <table class="table table-striped table-hover table-bordered align-middle text-center">
-                            <thead class="table-info">
+                            {{-- Cambio de color aquí: table-primary --}}
+                            <thead class="table-primary">
                                 <tr>
                                     <th>No</th>
                                     <th>Nombre</th>

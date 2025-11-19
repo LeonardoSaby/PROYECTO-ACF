@@ -27,5 +27,10 @@ class Inscripcione extends Model
     public function turno() {
         return $this->belongsTo(Turno::class, 'turno_id', 'turno_id');
     }
+    // **Relación con DetalleAsistencia**
+    public function detalleAsistencias()
+    {
+        return $this->hasMany(DetalleAsistencia::class, 'inscripcion_id', 'inscripcion_id');
+    }
 
 }

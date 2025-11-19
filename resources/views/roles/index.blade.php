@@ -4,58 +4,83 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">Roles</h3>
-        <a href="{{ route('roles.create') }}" class="btn btn-primary">Registrar Rol</a>
-    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card shadow-lg rounded-3">
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center flex-wrap">
+                    <h3 class="card-title mb-0"><i class="fas fa-user-shield"></i> Administrar Roles</h3>
 
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success">{{ $message }}</div>
-    @endif
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ route('roles.create') }}" class="btn btn-sm btn-success">
+                            <i class="fas fa-plus"></i> Registrar Rol
+                        </a>
+                    </div>
+                </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width:50px;">No</th>
-                            <th>Nombre</th>
-                            <th>Permisos</th>
-                            <th style="width:150px;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($roles as $index => $role)
-                        <tr>
-                            <td>{{ $roles->firstItem() + $index }}</td>
-                            <td>{{ $role->name }}</td>
-                            <td>
-    @forelse ($role->permissions as $perm)
-        <span class="badge" style="background-color: #d0e7ff; color: #0a3d62;">{{ $perm->name }}</span>
-    @empty
-        <span class="text-muted">Sin permisos</span>
-    @endforelse
-</td>
+                @if ($message = Session::get('success'))
+                    <div class="alert alert-success m-4">
+                        <p>{{ $message }}</p>
+                    </div>
+                @endif
 
-                            <td>
-                                <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-success btn-sm mb-1">Editar</a>
-                                <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm mb-1"
-                                        onclick="return confirm('¿Seguro que desea eliminar este rol?')">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <div class="card-body bg-white">
+                    <div class="table-responsive">
+                        {{-- Quitamos 'text-center' global para manejar alineaciones específicas --}}
+                        <table class="table table-striped table-hover table-bordered align-middle">
+                            <thead class="table-primary text-center">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nombre</th>
+                                    <th>Permisos</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($roles as $index => $role)
+                                    <tr>
+                                        <td class="text-center">{{ $roles->firstItem() + $index }}</td>
+                                        <td class="text-center">{{ $role->name }}</td>
+                                        
+                                        {{-- Alineación a la izquierda para facilitar la lectura --}}
+                                        <td class="text-start">
+                                            <div class="d-flex flex-wrap justify-content-start gap-1">
+                                                @forelse ($role->permissions as $perm)
+                                                    {{-- Color original más legible --}}
+                                                    <span class="badge" style="background-color: #d0e7ff; color: #0a3d62;">
+                                                        {{ $perm->name }}
+                                                    </span>
+                                                @empty
+                                                    <span class="badge bg-secondary">Sin permisos</span>
+                                                @endforelse
+                                            </div>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-1 flex-wrap">
+                                                <a class="btn btn-sm btn-success" href="{{ route('roles.edit', $role->id) }}">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger"
+                                                        onclick="event.preventDefault(); confirm('¿Seguro que desea eliminar este rol?') ? this.closest('form').submit() : false;">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card-footer clearfix">
+                    {!! $roles->links() !!}
+                </div>
             </div>
-        </div>
-
-        <div class="card-footer d-flex justify-content-end">
-            {!! $roles->links() !!}
         </div>
     </div>
 </div>

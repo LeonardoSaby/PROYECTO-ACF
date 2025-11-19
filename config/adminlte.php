@@ -331,7 +331,13 @@ return [
         ],
         
     ],
+],
+[
+    'text' => 'Vista Tutor',
+    'route' => 'tutor.vista',
+    'icon' => 'fas fa-chalkboard-teacher',
 ]
+
 
 
 

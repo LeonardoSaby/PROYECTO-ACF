@@ -79,7 +79,7 @@
     {{-- 🔹 Estilo exclusivo para LOGIN --}}
     <style>
         body.login-page {
-            background: linear-gradient(135deg, #007bff 0%, #6610f2 100%) !important;
+            background: linear-gradient(135deg, #007bff 0%, #0c5aeb 100%) !important;
             display: flex;
             align-items: center;
             justify-content: center;

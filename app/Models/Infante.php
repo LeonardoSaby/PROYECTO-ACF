@@ -46,6 +46,19 @@ class Infante extends Model
                     ->withTimestamps();
     }
 
+    public function detalleAsistencias()
+    {
+        return $this->hasManyThrough(
+            DetalleAsistencia::class,
+            Inscripcione::class,
+            'infante_id',       // FK de inscripciones a infante
+            'inscripcion_id',   // FK de detalle_asistencias a inscripciones
+            'infante_id',       // Local key en infante
+            'inscripcion_id'    // Local key en inscripciones
+        );
+    }
+
+
 
 
 

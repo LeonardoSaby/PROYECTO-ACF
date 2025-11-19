@@ -13,7 +13,8 @@ use App\Http\Controllers\InfantesTutoreController;
 use App\Http\Controllers\InscripcioneController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\DetalleAsistenciaController;
-use App\Http\Controllers\ReporteController; 
+use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\VistaTutorController;
 use Livewire\Volt\Volt;
 
 Route::get('/', fn() => view('welcome'))->name('');
@@ -111,5 +112,8 @@ Route::group(['middleware' => ['auth', 'permission:access.reportes.asistencias']
 // VISTA TUTOR (solo Tutor)
 // ==========================
 Route::group(['middleware' => ['auth', 'permission:access.tutor_view']], function() {
-    // Route::get('tutor', [TutorController::class, 'vista'])->name('tutor.vista');
+    Route::get('tutor', [VistaTutorController::class, 'index'])
+        ->name('tutor.vista');
 });
+
+
