@@ -39,7 +39,7 @@ return [
 
     // Se usa la clase 'text-indigo-400' para el color de acento
     'logo' => '<b class="text-indigo-400">ACF</b>', 
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png', // Mantener tu logo si no tienes uno nuevo
+    'logo_img' => 'images/logo_guarderia.png', 
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
@@ -131,13 +131,15 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    // Sidebar oscuro con color de acento índigo
-    'classes_sidebar' => 'sidebar-dark-indigo elevation-4', 
-    'classes_sidebar_nav' => '',
-    // Navbar oscuro con color índigo
-    'classes_topnav' => 'navbar-dark navbar-indigo', 
-    'classes_topnav_nav' => 'navbar-expand',
-    'classes_topnav_container' => 'container',
+    // Sidebar azul oscuro
+'classes_sidebar' => 'sidebar-dark-primary elevation-4', 
+'classes_sidebar_nav' => '',
+
+// Navbar azul oscuro
+'classes_topnav' => 'navbar-dark navbar-primary', 
+'classes_topnav_nav' => 'navbar-expand',
+'classes_topnav_container' => 'container',
+
 
     /*
     |--------------------------------------------------------------------------
@@ -208,10 +210,7 @@ return [
             'text' => 'Buscar...', // Texto de búsqueda
             'topnav_right' => true,
         ],
-        [
-            'type' => 'fullscreen-widget',
-            'topnav_right' => true,
-        ],
+        
 
         // Sidebar items:
         [
