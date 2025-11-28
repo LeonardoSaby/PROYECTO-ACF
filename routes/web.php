@@ -109,6 +109,26 @@ Route::group(['middleware' => ['auth', 'permission:access.reportes.asistencias']
     Route::get('reportes/asistencias', [ReporteController::class, 'vistaAsistencias'])->name('reportes.asistencias');
 });
 
+
+// 1. Vista general donde se elige qué comprobante generar (NO requiere ID)
+Route::get('/reportes/comprobante', 
+    [ReporteController::class, 'comprobanteIndex']
+)->name('reportes.comprobante_index');
+
+// 2. Vista previa del comprobante (SÍ requiere ID)
+Route::get('/reportes/comprobante/view/{inscripcion_id}', 
+    [ReporteController::class, 'comprobanteView']
+)->name('reportes.comprobante_view');
+
+// 3. Generar PDF del comprobante (SÍ requiere ID)
+Route::get('/reportes/comprobante/pdf/{inscripcion_id}', 
+    [ReporteController::class, 'comprobante']
+)->name('reportes.comprobante_pdf');
+
+
+
+
+
 // ==========================
 // VISTA TUTOR (solo Tutor)
 // ==========================

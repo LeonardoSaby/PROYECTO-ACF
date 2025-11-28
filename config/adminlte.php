@@ -318,6 +318,12 @@ return [
     'icon' => 'fas fa-exchange-alt',
     'submenu' => [
         [
+            'text' => 'comportante de inscripcion',
+            'route' => 'reportes.comprobante_index', // <--- usar 'route' en lugar de 'url' 
+            'icon' => 'fas fa-user-plus',
+        ],
+        
+        [
             'text' => 'Lista general de inscritos',
             'route' => 'reportes.lista_general', // <--- usar 'route' en lugar de 'url'
             'icon' => 'fas fa-user-plus',

@@ -73,28 +73,50 @@ class ReporteController extends Controller
         return $pdf->stream('lista_asistencia_' . $asistencia->fecha . '.pdf');
     }
 
-                    // Vista HTML del comporbantde
-    public function vistaCardex($inscripcione_id)
+    // =======================
+    // COMPROBANTE INDIVIDUAL
+    // =======================
+
+    // Vista general donde se elige qué comprobante generar
+public function comprobanteIndex()
+{
+    // Obtenemos todas las inscripciones para listarlas
+    $inscripciones = Inscripcione::with(['infante', 'curso', 'turno'])->get();
+
+    // Retornamos la vista donde se elige el comprobante
+    return view('reportes.comprobante', compact('inscripciones'));
+}
+
+    
+    // Vista HTML del comprobante
+    public function comprobanteView($inscripcion_id)
     {
-        $inscripcion = Inscripcione::with([
-            'infante',
-            'tutores',
-            'curso',
-            'turno'
-        ])->findOrFail($inscripcione_id);
-        return view('reportes.cardex', compact('inscripcion'));
+        $inscripcion = Inscripcione::with(['infante.tutores', 'curso', 'turno'])
+            ->findOrFail($inscripcion_id);
+
+        $infante = $inscripcion->infante;
+        $tutores = $infante->tutores; // colección de tutores
+        $curso   = $inscripcion->curso;
+        $turno   = $inscripcion->turno;
+
+        return view('reportes.comprobante', compact('inscripcion', 'infante', 'tutores', 'curso', 'turno'));
     }
 
-                    // Exporta el PDF del comporbantde
-    public function comprobantePDF($inscripcione_id)
+    // PDF del comprobante
+    public function comprobante($inscripcion_id)
     {
-        $inscripcion = Inscripcione::with([
-            'infante',
-            'tutor',
-            'curso',
-            'turno'
-        ])->findOrFail($inscripcione_id);
-        $pdf = Pdf::loadView('reportes.cardex_pdf', compact('inscripcion'));
-        return $pdf->stream('cardex_inscripcion_'.$inscripcion->inscripcione_id.'.pdf');
+        $inscripcion = Inscripcione::with(['infante.tutores', 'curso', 'turno'])
+            ->findOrFail($inscripcion_id);
+
+        $infante = $inscripcion->infante;
+        $tutores = $infante->tutores; // colección de tutores
+        $curso   = $inscripcion->curso;
+        $turno   = $inscripcion->turno;
+
+        $pdf = Pdf::loadView('reportes.comprobante_pdf', compact('inscripcion', 'infante', 'tutores', 'curso', 'turno'))
+                ->setPaper('letter', 'portrait');
+
+        return $pdf->stream('Comprobante_'.$infante->nombre_infante.'.pdf');
     }
+
 }

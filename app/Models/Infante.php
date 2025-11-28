@@ -45,6 +45,7 @@ class Infante extends Model
                     ->withPivot('parentesco', 'estado')
                     ->withTimestamps();
     }
+    
 
     public function detalleAsistencias()
     {

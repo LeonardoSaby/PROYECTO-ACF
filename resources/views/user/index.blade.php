@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card shadow-lg rounded-3">
-                {{-- Encabezado con el color Primary --}}
+                {{-- Encabezado --}}
                 <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center flex-wrap">
                     <h3 class="card-title mb-0"><i class="fas fa-users"></i> Administrar Usuarios</h3>
 
@@ -27,31 +27,20 @@
                 <div class="card-body bg-white">
                     <div class="table-responsive">
                         <table class="table table-striped table-hover table-bordered align-middle text-center">
-                            {{-- Cabecera de tabla con el color Primary --}}
                             <thead class="table-primary">
                                 <tr>
                                     <th>No</th>
                                     <th>Nombre</th>
                                     <th>Email</th>
-                                    <th>Roles</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($users as $user)
                                     <tr>
-                                        {{-- Asegúrate de que la variable $i venga del controlador, 
-                                             si no usas paginación simple puedes usar $loop->iteration --}}
-                                        <td>{{ ++$i }}</td> 
+                                        <td>{{ ++$i }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>
-                                            @forelse($user->roles as $role)
-                                                <span class="badge bg-primary">{{ $role->name }}</span>
-                                            @empty
-                                                <span class="badge bg-secondary">Sin rol</span>
-                                            @endforelse
-                                        </td>
                                         <td>
                                             <div class="d-flex justify-content-center gap-1 flex-wrap">
                                                 <a class="btn btn-sm btn-success" href="{{ route('users.edit', $user->id) }}">
