@@ -35,10 +35,10 @@
             margin-bottom: 10px;
             display: flex;
             justify-content: flex-end;
+            gap: 20px;
         }
 
         .info div {
-            margin-left: 15px;
             text-align: left;
             font-size: 10pt;
         }
@@ -57,7 +57,7 @@
             border: 1px solid #023059;
             text-align: center;
             vertical-align: middle;
-            padding: 3px;
+            padding: 4px;
             font-size: 9pt;
         }
 
@@ -69,17 +69,12 @@
         td.nombre {
             text-align: left;
             padding-left: 5px;
-            max-width: 120px;
+            max-width: 200px;
             word-wrap: break-word;
         }
 
         td.cuadro {
-            height: 20px;
-        }
-
-        td.total {
-            background-color: #a8dadc;
-            font-weight: bold;
+            height: 25px;
         }
 
         footer {
@@ -102,42 +97,26 @@
     <div><label>Turno:</label> {{ $turno->nombre_turno ?? 'N/A' }}</div>
 </div>
 
-@php
-    // Mínimo 5 columnas
-    $columnas = max(5, count($inscritos));
-@endphp
-
 <table>
     <thead>
-
-        {{-- FILA DE FECHAS (EN BLANCO PARA ESCRIBIR A MANO) --}}
         <tr>
-            <th></th>
-            <th></th>
-            @for($i = 1; $i <= $columnas; $i++)
-                <th></th>
-            @endfor
-            <th></th>
-        </tr>
-
-        {{-- ENCABEZADOS --}}
-        <tr>
-            <th>#</th>
-            <th>ALUMNO / NOMBRE</th>
+            <th>NOMBRE Y APELLIDO</th>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miércoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
         </tr>
     </thead>
-
     <tbody>
         @foreach($inscritos as $inscripcion)
             <tr>
-                <td>{{ $loop->iteration }}</td>
                 <td class="nombre">{{ $inscripcion->infante->nombre_infante }} {{ $inscripcion->infante->apellido_infante }}</td>
-
-                @for($i=1; $i <= $columnas; $i++)
-                    <td class="cuadro"></td>
-                @endfor
-
-                <td class="total"></td>
+                <td class="cuadro"></td>
+                <td class="cuadro"></td>
+                <td class="cuadro"></td>
+                <td class="cuadro"></td>
+                <td class="cuadro"></td>
             </tr>
         @endforeach
     </tbody>

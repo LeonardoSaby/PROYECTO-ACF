@@ -9,14 +9,23 @@
             <div class="card shadow-lg rounded-3">
                 {{-- Encabezado --}}
                 <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center flex-wrap">
+                    {{-- Título --}}
                     <h3 class="card-title mb-0"><i class="fas fa-users"></i> Administrar Usuarios</h3>
 
-                    <div class="d-flex gap-2 flex-wrap">
+                    {{-- Buscador --}}
+                    <form action="{{ route('users.index') }}" method="GET" class="d-flex gap-2" style="width: 250px;">
+        <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Buscar por nombre o email" class="form-control form-control-sm" />
+        <button type="submit" class="btn btn-light btn-sm"><i class="fas fa-search"></i></button>
+    </form>
+
+                    {{-- Botón de registrar --}}
+                    <div class="d-flex gap-1">
                         <a href="{{ route('users.create') }}" class="btn btn-sm btn-success">
                             <i class="fas fa-plus"></i> Registrar Usuario
                         </a>
                     </div>
                 </div>
+
 
                 @if ($message = Session::get('success'))
                     <div class="alert alert-success m-4">

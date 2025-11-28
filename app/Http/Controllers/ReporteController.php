@@ -40,9 +40,13 @@ class ReporteController extends Controller
             'turno_id' => 'required|exists:turnos,turno_id',
         ]);
         $inscritos = Inscripcione::with(['infante', 'curso', 'turno'])
-                        ->where('curso_id', $request->curso_id)
-                        ->where('turno_id', $request->turno_id)
-                        ->get();
+                ->where('curso_id', $request->curso_id)
+                ->where('turno_id', $request->turno_id)
+                ->join('infantes', 'inscripciones.infante_id', '=', 'infantes.infante_id')
+                ->orderBy('infantes.nombre_infante', 'asc')
+                ->select('inscripciones.*')
+                ->get();
+
         $curso = Curso::find($request->curso_id);
         $turno = Turno::find($request->turno_id);
         $pdf = Pdf::loadView('reportes.lista_filtrada_pdf', compact('inscritos', 'curso', 'turno'));

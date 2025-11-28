@@ -17,29 +17,31 @@ class RoleSeeder extends Seeder
         // -----------------------------------
         $permissions = [
             'acceso_y_seguridad' => [
-                'access.users', 
-                'access.roles'
+                'acceso.usuarios', 
+                'acceso.roles',
+                'acceso.Roles_y_usuarios', // <--- nuevo permiso
             ],
             'parametrizacion' => [
-                'access.tutores', 
-                'access.infantes', 
-                'access.salas', 
-                'access.niveles',
-                'access.cursos',
-                'access.docentes',
-                'access.turnos'
+                'acceso.tutores', 
+                'acceso.infantes', 
+                'acceso.salas', 
+                'acceso.niveles',
+                'acceso.cursos',
+                'acceso.docentes',
+                'acceso.turnos'
             ],
             'transacciones' => [
-                'access.inscripciones',
-                'access.asistencias',
-                'access.asistencias.generar'
+                'acceso.inscripciones',
+                'acceso.asistencias',
+                'acceso.asistencias.generar'
             ],
             'reportes' => [
-                'access.reportes.lista_general',
-                'access.reportes.lista_filtrada',
-                'access.reportes.asistencias'
+                'acceso.reportes.lista_general',
+                'acceso.reportes.lista_filtrada',
+                'acceso.reportes.asistencias',
+                'acceso.reportes.comprobante', // <--- nuevo permiso para el reporte de comprobante
             ],
-            'tutor' => ['access.tutor_view'],
+            'tutor' => ['acceso.tutor_view'],
         ];
 
         // Crear permisos
@@ -58,13 +60,14 @@ class RoleSeeder extends Seeder
         $rolesPermissions = [
             'Administrador' => Permission::all()->pluck('name')->toArray(),
             'Docente' => [
-                'access.inscripciones',
-                'access.asistencias',
-                'access.asistencias.generar',
-                'access.reportes.lista_filtrada',
-                'access.reportes.asistencias',
+                'acceso.inscripciones',
+                'acceso.asistencias',
+                'acceso.asistencias.generar',
+                'acceso.reportes.lista_filtrada',
+                'acceso.reportes.asistencias',
+                'acceso.reportes.comprobante', // dar permiso de comprobante a docente también
             ],
-            'Tutor' => ['access.tutor_view'],
+            'Tutor' => ['acceso.tutor_view'],
         ];
 
         foreach ($rolesPermissions as $roleName => $perms) {

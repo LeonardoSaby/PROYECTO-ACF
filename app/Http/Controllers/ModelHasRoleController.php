@@ -3,22 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
 class ModelHasRoleController extends Controller
 {
     /**
-     * Mostrar listado de usuarios con sus roles.
+     * Mostrar listado de usuarios con roles asignados.
      */
     public function index(Request $request)
     {
-        $users = User::with('roles')->paginate(10);
+        // Solo usuarios que tengan al menos un rol
+        $users = User::whereHas('roles')->with('roles')->paginate(100);
 
         return view('model-has-role.index', compact('users'))
-            ->with('i', ($request->input('page', 1) - 1) * 10);
+            ->with('i', ($request->input('page', 1) - 1) * 100);
     }
 
     /**
@@ -26,7 +25,8 @@ class ModelHasRoleController extends Controller
      */
     public function create()
     {
-        $users = User::all();
+        // Aquí traes todos los usuarios que aún no tengan rol asignado
+        $users = User::doesntHave('roles')->get();
         $roles = Role::all();
 
         return view('model-has-role.create', compact('users', 'roles'));
@@ -45,10 +45,10 @@ class ModelHasRoleController extends Controller
         ]);
 
         $users = User::whereIn('id', $request->users)->get();
-        $roles = Role::whereIn('id', $request->roles)->get(); // Convertir IDs a modelos
+        $roles = Role::whereIn('id', $request->roles)->get();
 
         foreach ($users as $user) {
-            $user->syncRoles($roles); // Asigna los roles correctamente
+            $user->syncRoles($roles); // Asigna los roles
         }
 
         return redirect()->route('model-has-roles.index')
@@ -77,7 +77,7 @@ class ModelHasRoleController extends Controller
         ]);
 
         $user = User::findOrFail($user_id);
-        $roles = Role::whereIn('id', $request->roles)->get(); // Convertir IDs a modelos
+        $roles = Role::whereIn('id', $request->roles)->get();
 
         $user->syncRoles($roles);
 
@@ -86,17 +86,16 @@ class ModelHasRoleController extends Controller
     }
 
     /**
-     * Eliminar un rol específico de un usuario.
+     * Eliminar roles de un usuario (solo de model_has_roles).
      */
     public function destroy($user_id)
-{
-    $user = User::findOrFail($user_id);
+    {
+        $user = User::findOrFail($user_id);
 
-    // Eliminar todos los roles asignados al usuario
-    $user->syncRoles([]); // Esto quita todos los roles
+        // Solo elimina los roles asignados, no el usuario
+        $user->roles()->detach();
 
-    return redirect()->route('model-has-roles.index')
-        ->with('success', 'Todos los roles del usuario fueron eliminados correctamente.');
-}
-
+        return redirect()->route('model-has-roles.index')
+            ->with('success', 'Roles eliminados del usuario correctamente.');
+    }
 }

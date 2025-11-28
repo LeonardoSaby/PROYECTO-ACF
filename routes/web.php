@@ -38,105 +38,88 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // ==========================
 // ADMINISTRACIÓN (solo Admin)
 // ==========================
-
-Route::group(['middleware' => ['auth', 'permission:access.users']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.usuarios']], function() {
     Route::resource('users', UserController::class);
 });
-Route::group(['middleware' => ['auth', 'permission:access.roles']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.roles']], function() {
     Route::resource('roles', RoleController::class);
 });
+Route::group(['middleware' => ['auth', 'permission:acceso.Roles_y_usuarios']], function() {
+    Route::resource('model-has-roles', ModelHasRoleController::class);
+});
 
-// Parametrización completa (solo Admin)
-Route::group(['middleware' => ['auth', 'permission:access.infantes']], function() {
+// ==========================
+// PARAMETRIZACIÓN
+// ==========================
+Route::group(['middleware' => ['auth', 'permission:acceso.infantes']], function() {
     Route::resource('infantes', InfanteController::class);
 });
-Route::group(['middleware' => ['auth', 'permission:access.tutores']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.tutores']], function() {
     Route::resource('tutores', TutoreController::class);
 });
-Route::group(['middleware' => ['auth', 'permission:access.turnos']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.turnos']], function() {
     Route::resource('turnos', TurnoController::class);
 });
-Route::group(['middleware' => ['auth', 'permission:access.niveles']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.niveles']], function() {
     Route::resource('niveles', NiveleController::class);
 });
-Route::group(['middleware' => ['auth', 'permission:access.salas']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.salas']], function() {
     Route::resource('salas', SalaController::class);
 });
-Route::group(['middleware' => ['auth', 'permission:access.cursos']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.cursos']], function() {
     Route::resource('cursos', CursoController::class);
 });
-Route::group(['middleware' => ['auth', 'permission:access.docentes']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.docentes']], function() {
     Route::resource('docentes', DocenteController::class);
 });
-Route::group(['middleware' => ['auth', 'permission:access.infantes_tutores']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.infantes_tutores']], function() {
     Route::resource('infantes-tutores', InfantesTutoreController::class);
 });
 
 // ==========================
 // INSCRIPCIONES
 // ==========================
-Route::group(['middleware' => ['auth', 'permission:access.inscripciones']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.inscripciones']], function() {
     Route::resource('inscripciones', InscripcioneController::class);
 });
 
 // ==========================
 // ASISTENCIAS
 // ==========================
-Route::group(['middleware' => ['auth', 'permission:access.asistencias']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.asistencias']], function() {
     Route::get('asistencias/generar', [AsistenciaController::class, 'generarAsistencia'])
-    ->name('asistencias.generarAsistencia');
-
-Route::resource('asistencias', AsistenciaController::class);
-
+        ->name('asistencias.generarAsistencia');
+    Route::resource('asistencias', AsistenciaController::class);
 });
-Route::group(['middleware' => ['auth', 'permission:access.detalle_asistencias']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.detalle_asistencias']], function() {
     Route::resource('detalle-asistencias', DetalleAsistenciaController::class);
 });
 
 // ==========================
 // REPORTES
 // ==========================
-Route::group(['middleware' => ['auth', 'permission:access.reportes.lista_general']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.reportes.lista_general']], function() {
     Route::get('reportes/inscritos', [ReporteController::class, 'vistaListaGeneral'])->name('reportes.lista_general');
     Route::get('reportes/inscritos/pdf', [ReporteController::class, 'listaGeneralPDF'])->name('reportes.lista_general_pdf');
 });
-Route::group(['middleware' => ['auth', 'permission:access.reportes.lista_filtrada']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.reportes.lista_filtrada']], function() {
     Route::get('reportes/inscritos/filtrar', [ReporteController::class, 'formFiltrar'])->name('reportes.form_filtrar');
     Route::get('reportes/inscritos/por-curso', [ReporteController::class, 'listaFiltradaPDF'])->name('reportes.lista_filtrada_pdf');
 });
-Route::group(['middleware' => ['auth', 'permission:access.reportes.asistencias']], function() {
+Route::group(['middleware' => ['auth', 'permission:acceso.reportes.asistencias']], function() {
     Route::get('reportes/asistencia/{asistencia}', [ReporteController::class, 'listaAsistenciaPDF'])->name('reportes.asistencia_pdf');
     Route::get('reportes/asistencias', [ReporteController::class, 'vistaAsistencias'])->name('reportes.asistencias');
 });
-
-
-// 1. Vista general donde se elige qué comprobante generar (NO requiere ID)
-Route::get('/reportes/comprobante', 
-    [ReporteController::class, 'comprobanteIndex']
-)->name('reportes.comprobante_index');
-
-// 2. Vista previa del comprobante (SÍ requiere ID)
-Route::get('/reportes/comprobante/view/{inscripcion_id}', 
-    [ReporteController::class, 'comprobanteView']
-)->name('reportes.comprobante_view');
-
-// 3. Generar PDF del comprobante (SÍ requiere ID)
-Route::get('/reportes/comprobante/pdf/{inscripcion_id}', 
-    [ReporteController::class, 'comprobante']
-)->name('reportes.comprobante_pdf');
-
-
-
-
+Route::group(['middleware' => ['auth', 'permission:acceso.reportes.comprobante']], function() {
+    Route::get('/reportes/comprobante', [ReporteController::class, 'comprobanteIndex'])->name('reportes.comprobante_index');
+    Route::get('/reportes/comprobante/view/{inscripcion_id}', [ReporteController::class, 'comprobanteView'])->name('reportes.comprobante_view');
+    Route::get('/reportes/comprobante/pdf/{inscripcion_id}', [ReporteController::class, 'comprobante'])->name('reportes.comprobante_pdf');
+});
 
 // ==========================
 // VISTA TUTOR (solo Tutor)
 // ==========================
-Route::group(['middleware' => ['auth', 'permission:access.tutor_view']], function() {
-    Route::get('tutor', [VistaTutorController::class, 'index'])
-        ->name('tutor.vista');
+Route::group(['middleware' => ['auth', 'permission:acceso.tutor_view']], function() {
+    Route::get('tutor', [VistaTutorController::class, 'index'])->name('tutor.vista');
 });
-
-Route::resource('model-has-roles', ModelHasRoleController::class);
-
 
