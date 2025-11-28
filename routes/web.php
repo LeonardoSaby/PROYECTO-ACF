@@ -15,6 +15,7 @@ use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\DetalleAsistenciaController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\VistaTutorController;
+use App\Http\Controllers\ModelHasRoleController;
 use Livewire\Volt\Volt;
 
 Route::get('/', fn() => view('welcome'))->name('');
@@ -115,5 +116,7 @@ Route::group(['middleware' => ['auth', 'permission:access.tutor_view']], functio
     Route::get('tutor', [VistaTutorController::class, 'index'])
         ->name('tutor.vista');
 });
+
+Route::resource('model-has-roles', ModelHasRoleController::class);
 
 

@@ -22,7 +22,7 @@
 
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Registro de Asistencias</h4>
+            <h4 class="mb-0">Administrar Asistencia</h4>
         </div>
 
         <div class="card-body">
@@ -31,7 +31,7 @@
                     <label class="form-label">Fecha:</label>
                     <input type="date" name="fecha" class="form-control" value="{{ now()->format('Y-m-d') }}" required>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">Curso:</label>
                     <select name="curso_id" class="form-control" required>
                         <option value="">Seleccione</option>
@@ -40,7 +40,7 @@
                         @endforeach
                     </select>
                 </div>  
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">Turno:</label>
                     <select name="turno_id" class="form-control" required>
                         <option value="">Seleccione</option>
@@ -49,9 +49,9 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-1 d-flex">
+                <div class="col-md-2 d-flex">
                     <button type="submit" class="btn btn-success w-100">
-                        <i class="fas fa-check"></i> Generar
+                        <i class="fas fa-check"></i> Generar lista
                     </button>
                 </div>
             </form>

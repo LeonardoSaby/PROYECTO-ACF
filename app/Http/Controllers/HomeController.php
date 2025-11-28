@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Infante;
 use App\Models\Tutore;
 use App\Models\DetalleAsistencia;
+use App\Models\Inscripcione;
 use Carbon\Carbon;
 
 class HomeController extends Controller
@@ -25,7 +26,7 @@ class HomeController extends Controller
             return 'Mayor de 6'; // opcional, para control si alguien excede edad
         })->countBy()->sortKeys();
 
-        $totalInfantes = Infante::count();
+        $totalInfantes = Inscripcione::count();
 
         $presentesHoy = DetalleAsistencia::whereDate('created_at', today())
                             ->where('observacion', 'presente')

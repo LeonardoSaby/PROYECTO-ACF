@@ -239,11 +239,15 @@ return [
                                     
                                 ],
                                 [
-                            'text' => 'Roles',
-                            'url'  => 'roles',
-                            'icon' => 'fas fa-user-shield',
-                        ],
-                        
+                                'text' => 'Roles',
+                                'url'  => 'roles',
+                                'icon' => 'fas fa-user-shield',
+                                ],
+                                [
+                                'text' => 'Roles y Usuarios',
+                                'url'  => 'model-has-roles',
+                                'icon' => 'fas fa-user-shield',
+                                ],
                                 
                             ],
                         ],

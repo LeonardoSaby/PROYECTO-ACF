@@ -16,8 +16,8 @@ class RoleController extends Controller
 
     public function create()
     {
-        $permissions = Permission::all(); // Trae todos los permisos
-        $rolePermissions = []; // Para crear, no hay permisos asignados aún
+        $permissions = Permission::all(); 
+        $rolePermissions = []; 
         return view('roles.form', compact('permissions', 'rolePermissions'));
     }
 
@@ -28,11 +28,9 @@ class RoleController extends Controller
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,name',
         ]);
-
         $role = Role::create(['name' => $request->name]);
         $role->syncPermissions($request->permissions ?? []);
-
-        return redirect()->route('roles.index')->with('success', 'Rol creado correctamente.');
+        return redirect()->route('roles.index')->with('success', 'Rol registrado correctamente.');
     }
 
     public function edit(Role $role)
@@ -49,10 +47,8 @@ class RoleController extends Controller
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,name',
         ]);
-
         $role->update(['name' => $request->name]);
         $role->syncPermissions($request->permissions ?? []);
-
         return redirect()->route('roles.index')->with('success', 'Rol actualizado correctamente.');
     }
 

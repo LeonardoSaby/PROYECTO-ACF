@@ -71,13 +71,13 @@
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <a href="{{ route('inscripciones.edit', $inscripcione->inscripcion_id) }}" class="btn btn-sm btn-success">
-                                                    <i class="fas fa-edit"></i> Editar
+                                                    <i class="fas fa-edit"></i> 
                                                 </a>
                                                 <form action="{{ route('inscripciones.destroy', $inscripcione->inscripcion_id) }}" method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-danger" onclick="event.preventDefault(); if(confirm('¿Estás seguro de eliminar esta inscripción?')) { this.closest('form').submit(); }">
-                                                        <i class="fas fa-trash"></i> Eliminar
+                                                        <i class="fas fa-trash"></i> 
                                                     </button>
                                                 </form>
                                             </div>

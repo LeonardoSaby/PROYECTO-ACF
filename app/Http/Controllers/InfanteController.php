@@ -21,8 +21,8 @@ class InfanteController extends Controller
             ->where('estado', 'Activo')
             ->when($search, function ($query, $search) {
                 return $query->where('nombre_infante', 'like', "%{$search}%")
-                             ->orWhere('apellido_infante', 'like', "%{$search}%")
-                             ->orWhere('CI_infante', 'like', "%{$search}%");
+                                ->orWhere('apellido_infante', 'like', "%{$search}%")
+                                ->orWhere('CI_infante', 'like', "%{$search}%");
             })
             ->paginate(1000);
 
@@ -34,14 +34,12 @@ class InfanteController extends Controller
     {
         $infante = new Infante();
         $tutores = Tutore::all();
-
         return view('infante.create', compact('infante', 'tutores'));
     }
 
     public function store(InfanteRequest $request): RedirectResponse
     {
         $infante = Infante::create($request->validated());
-
         if ($request->tutores && $request->parentezcos) {
             $syncData = [];
             foreach ($request->tutores as $i => $tutorId) {
@@ -54,22 +52,15 @@ class InfanteController extends Controller
             }
             $infante->tutores()->sync($syncData);
         }
-
-        return redirect()->route('infantes.index')->with('success', 'Infante creado exitosamente.');
+        return redirect()->route('infantes.index')->with('success', 'Infante registrado exitosamente.');
     }
 
 
     public function show($infante_id): View
     {
-        // Cargar infante junto con los tutores a través de la tabla pivote
         $infante = Infante::with('tutores')->findOrFail($infante_id);
-
         return view('infante.show', compact('infante'));
     }
-
-
-
-
 
     public function edit($infante_id): View
     {
@@ -78,44 +69,35 @@ class InfanteController extends Controller
         return view('infante.edit', compact('infante', 'tutores'));
     }
 
-   public function update(InfanteRequest $request, $id): RedirectResponse
-{
-    $infante = Infante::findOrFail($id);
-    $infante->update($request->validated());
+    public function update(InfanteRequest $request, $id): RedirectResponse
+    {
+        $infante = Infante::findOrFail($id);
+        $infante->update($request->validated());
+        if ($request->tutores && $request->parentezcos) {
+            $syncData = [];
+            foreach ($request->tutores as $i => $tutorId) {
+                if ($tutorId) {
+                    $syncData[$tutorId] = [
+                        'parentesco' => $request->parentezcos[$i],
+                        'estado' => 'activo'
+                    ];
+                }
+            }   
+            $infante->tutores()->sync($syncData);
+        }
 
-    // Solo sincronizar si se envían tutores
-    if ($request->tutores && $request->parentezcos) {
-        $syncData = [];
-        foreach ($request->tutores as $i => $tutorId) {
-            if ($tutorId) {
-                $syncData[$tutorId] = [
-                    'parentesco' => $request->parentezcos[$i],
-                    'estado' => 'activo'
-                ];
-            }
-        }   
-        $infante->tutores()->sync($syncData);
+        return redirect()->route('infantes.index')->with('success', 'Infante actualizado exitosamente.');
     }
-
-    return redirect()->route('infantes.index')->with('success', 'Infante actualizado exitosamente.');
-}
-
-
 
     public function destroy($infante_id): RedirectResponse
     {
         $infante = Infante::find($infante_id);
-
         if ($infante) {
             $infante->update(['estado' => 'Inactivo']);
-
-            // también eliminamos las relaciones con tutores
             $infante->tutores()->detach();
-
             return Redirect::route('infantes.index')
                 ->with('success', 'Infante desactivado exitosamente.');
         }
-
         return Redirect::route('infantes.index')
             ->with('error', 'Infante no encontrado.');
     }

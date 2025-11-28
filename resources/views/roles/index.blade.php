@@ -25,8 +25,8 @@
 
                 <div class="card-body bg-white">
                     <div class="table-responsive">
-                        {{-- Quitamos 'text-center' global para manejar alineaciones específicas --}}
-                        <table class="table table-striped table-hover table-bordered align-middle">
+                        {{-- Aplicamos una clase para aumentar el tamaño de la fuente de la tabla --}}
+                        <table class="table table-striped table-hover table-bordered align-middle table-font-lg"> 
                             <thead class="table-primary text-center">
                                 <tr>
                                     <th>No</th>
@@ -45,9 +45,9 @@
                                         <td class="text-start">
                                             <div class="d-flex flex-wrap justify-content-start gap-1">
                                                 @forelse ($role->permissions as $perm)
-                                                    {{-- Color original más legible --}}
-                                                    <span class="badge" style="background-color: #d0e7ff; color: #0a3d62;">
-                                                        {{ $perm->name }}
+                                                    {{-- Añadimos la clase **permission-badge** para aumentar el tamaño de la fuente --}}
+                                                    <span class="badge **permission-badge**" style="background-color: #d0e7ff; color: #0a3d62;">
+                                                        {{ $perm->name . ','}}
                                                     </span>
                                                 @empty
                                                     <span class="badge bg-secondary">Sin permisos</span>
@@ -84,4 +84,38 @@
         </div>
     </div>
 </div>
+@endsection
+
+{{-- Sección CSS para los estilos personalizados --}}
+@section('css')
+    @section('css')
+    <style>
+        /* Estilo para los badges de permiso */
+        .permission-badge {
+            /* Aumentamos el tamaño de la fuente de los badges y forzamos su aplicación */
+            font-size: 0.95em !important; 
+            padding: 0.5em 0.8em !important;
+            line-height: 1.2 !important; /* Para evitar que el texto esté muy pegado */
+        }
+        
+        /* Estilo para aumentar el tamaño de la fuente de toda la tabla */
+        .table-font-lg th,
+        .table-font-lg td {
+            /* Forzamos un tamaño de fuente más grande en toda la tabla */
+            font-size: 1rem !important; 
+            vertical-align: middle; /* Asegura que el contenido esté centrado verticalmente */
+        }
+        
+        /* Ajuste para el texto en el encabezado (Administrar Roles) */
+        .card-header h3 {
+             font-size: 1.75rem !important; /* Hacemos el título más grande */
+        }
+        
+        /* Aseguramos que el texto dentro de los botones de acción sea visible */
+        .d-flex.justify-content-center.gap-1.flex-wrap .btn i {
+             font-size: 0.9rem !important;
+        }
+        
+    </style>
+@endsection
 @endsection

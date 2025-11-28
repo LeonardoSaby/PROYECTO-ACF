@@ -50,7 +50,7 @@ class AsistenciaController extends Controller
             ->exists();
 
         if ($existe) {
-            return redirect()->back()->with('warning', 'Ya se generó la asistencia para este curso y turno en esta fecha.');
+            return redirect()->back()->with('warning', 'Ya se generó la asistencia para este curso y turno este dia.');
         }
 
         // Obtener inscripciones del curso y turno
@@ -105,7 +105,7 @@ class AsistenciaController extends Controller
             ]);
         }
 
-        return redirect()->route('asistencias.index')->with('success', 'Asistencia registrada correctamente.');
+        return redirect()->route('asistencias.index')->with('success', 'Lista de asistencia registrada correctamente.');
     }
 
     // === Mostrar detalles de una asistencia ===

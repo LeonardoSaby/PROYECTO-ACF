@@ -57,7 +57,7 @@ class InscripcioneRequest extends FormRequest
                 ->exists();
 
             if ($yaInscrito) {
-                $validator->errors()->add('infante_id', 'Este infante ya está inscrito en un curso este año.');
+                $validator->errors()->add('infante_id', 'Este infante ya está inscrito.');
             }
 
             // 2) Validar edad para el curso
